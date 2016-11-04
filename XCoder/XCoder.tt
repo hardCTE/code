@@ -1,4 +1,4 @@
-﻿<#@ template language="C#" hostSpecific="true" debug="true" #>
+<#@ template language="C#" hostSpecific="true" debug="true" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ import namespace="System" #>
@@ -77,7 +77,7 @@
 <#+
 	String GetXPath(String mypath)
 	{
-		var xpath = @"{XCoderPath}";
+		var xpath = @"D:\MyStudy\SourceTreeRoot\git\Code\XCoder\";
 		if(!File.Exists(xpath + "XCoder.exe")) xpath = Path.Combine(mypath, @"..\XCoder\");
 		if(!File.Exists(xpath + "XCoder.exe")) xpath = Path.Combine(mypath, @"..\代码生成\");
 		if(!File.Exists(xpath + "XCoder.exe")) xpath = Path.Combine(mypath, @"..\..\XCoder\");

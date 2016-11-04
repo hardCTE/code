@@ -1,0 +1,150 @@
+﻿11:26:43.039  1 N - System.Net.WebException: 无法连接到远程服务器
+   在 System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
+   在 System.Net.WebClient.DownloadData(Uri address)
+   在 NewLife.Web.WebClientX.GetHtml(String url) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 157
+   在 NewLife.Web.WebClientX.GetLinks(String url) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 173
+   在 NewLife.Web.WebClientX.DownloadLink(String url, String name, String destdir) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 212
+   在 NewLife.Web.WebClientX.DownloadLinkAndExtract(String url, String name, String destdir) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 301
+11:26:43.042  1 N - 未找到  MySql.Data.dll
+11:26:43.043  1 N - [3]GetSchema(MetaDataCollections)异常重试！缺少文件D:\MyStudy\SourceTreeRoot\git\Code\XCoder\Plugins\MySql.Data.dll！,连接字符串 Server=172.28.9.175;Port=3306;Database=xdb_test;Uid=root;Pwd=123456;CharSet=utf8;Allow Zero Datetime=True
+11:26:43.044  4 Y 3 MySql.Data.dll不存在或平台版本不正确，准备联网获取 ftp://ftp.newlifex.com/x/
+11:26:43.044  4 Y 3 目标文件C:\X\Cache\mysql.data.zip已存在，更新于2016-09-27 19:38:13.337
+11:27:04.051  4 Y 3 System.Net.WebException: 无法连接到远程服务器
+   在 System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
+   在 System.Net.WebClient.DownloadData(Uri address)
+   在 NewLife.Web.WebClientX.GetHtml(String url) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 157
+   在 NewLife.Web.WebClientX.GetLinks(String url) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 173
+   在 NewLife.Web.WebClientX.DownloadLink(String url, String name, String destdir) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 212
+   在 NewLife.Web.WebClientX.DownloadLinkAndExtract(String url, String name, String destdir) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 301
+11:27:04.052  4 Y 3 未找到  MySql.Data.dll
+11:27:04.054  4 Y 23 System.IO.FileNotFoundException: 缺少文件D:\MyStudy\SourceTreeRoot\git\Code\XCoder\Plugins\MySql.Data.dll！
+文件名:“D:\MyStudy\SourceTreeRoot\git\Code\XCoder\Plugins\MySql.Data.dll”
+   在 XCode.DataAccessLayer.DbBase.GetProviderFactory(String assemblyFile, String className) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Common\DbBase.cs:行号 282
+   在 XCode.DataAccessLayer.MySql.get_dbProviderFactory() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Database\MySql.cs:行号 31
+   在 XCode.DataAccessLayer.MySql.get_Factory() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Database\MySql.cs:行号 42
+   在 XCode.DataAccessLayer.DbSession.get_Factory() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Common\DbSession.cs:行号 60
+   在 XCode.DataAccessLayer.DbSession.get_Conn() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Common\DbSession.cs:行号 75
+   在 XCode.DataAccessLayer.DbSession.get_DatabaseName() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Common\DbSession.cs:行号 175
+   在 XCode.DataAccessLayer.RemoteDbSession.ProcessWithSystem(Func`2 callback) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Common\RemoteDb.cs:行号 110
+   在 XCode.DataAccessLayer.RemoteDbSession.GetSchema(String collectionName, String[] restrictionValues) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\Common\RemoteDb.cs:行号 90
+   在 XCode.DataAccessLayer.DbMetaData.GetSchema(String collectionName, String[] restrictionValues) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\MetaData\DbMetaData.cs:行号 106
+   在 XCode.DataAccessLayer.DbMetaData.get_MetaDataCollections() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\MetaData\DbMetaData.cs:行号 28
+   在 XCode.DataAccessLayer.DbMetaData.GetSchema(String collectionName, String[] restrictionValues) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\MetaData\DbMetaData.cs:行号 104
+   在 XCode.DataAccessLayer.DbMetaData.OnGetTables(ICollection`1 names) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\MetaData\DbMetaData_Positive.cs:行号 70
+   在 XCode.DataAccessLayer.DbMetaData.GetTables() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\MetaData\DbMetaData_Positive.cs:行号 58
+   在 XCode.DataAccessLayer.DAL.GetTables() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\DAL.cs:行号 313
+   在 XCode.DataAccessLayer.DAL.get_Tables() 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\XCode\DataAccessLayer\DAL.cs:行号 297
+   在 XCoder.FrmMain.<>c__DisplayClass21_0.<AutoLoadTables>b__0()
+   在 System.Threading.Tasks.Task.Execute()
+11:27:04.057  1 N - MySql.Data.dll不存在或平台版本不正确，准备联网获取 ftp://ftp.newlifex.com/x/
+11:27:04.063  1 N - 目标文件C:\X\Cache\mysql.data.zip已存在，更新于2016-09-27 19:38:13.337
+11:27:25.070  1 N - System.Net.WebException: 无法连接到远程服务器
+   在 System.Net.WebClient.DownloadDataInternal(Uri address, WebRequest& request)
+   在 System.Net.WebClient.DownloadData(Uri address)
+   在 NewLife.Web.WebClientX.GetHtml(String url) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 157
+   在 NewLife.Web.WebClientX.GetLinks(String url) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 173
+   在 NewLife.Web.WebClientX.DownloadLink(String url, String name, String destdir) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 212
+   在 NewLife.Web.WebClientX.DownloadLinkAndExtract(String url, String name, String destdir) 位置 D:\MyStudy\SourceTreeRoot\git\Code\X\NewLife.Core\Web\WebClientX.cs:行号 301
+11:27:25.071  1 N - 未找到  MySql.Data.dll
+
+#Software: 新生命超级码神工具
+#ProcessID: 24364 x64
+#AppDomain: XCoder.exe
+#FileName: D:\MyStudy\SourceTreeRoot\git\Code\XCoder\XCoder.exe
+#BaseDirectory: D:\MyStudy\SourceTreeRoot\git\Code\XCoder\
+#ApplicationType: WinForm
+#CLR: 4.0.30319.42000
+#OS: Windows 10.0.14393.0 x64, Administrator/XUDB
+#CPU: Intel(R) Core(TM) i5-3470 CPU @ 3.20GHz BFEBFBFF000306A9
+#Memory: 7,863M/16,338M
+#Date: 2016-11-04
+#字段: 时间 线程ID 线程池Y网页W普通N 线程名 消息内容
+#Fields: Time ThreadID IsPoolThread ThreadName Message
+11:27:45.156  1 N - NewLife.Core v6.0.2016.0706 Build 2016-11-04 11:11:34
+11:27:45.513  1 N - XCoder       v6.8.2016.0504 Build 2016-11-04 11:20:50
+11:27:45.799 23 N 7 自动检测文件17个，发现数据库0个，耗时：00:00:00.0018242！
+11:27:45.802  5 Y 9 XCode        v9.1.2016.0921 Build 2016-11-04 11:11:34
+11:27:45.803  5 Y 9 一级缓存：请求级缓存
+11:27:45.803  5 Y 9 自动为[local_MSSQL]设置连接字符串：Data Source=.\local_MSSQL.db
+
+#Software: 新生命超级码神工具
+#ProcessID: 10868 x64
+#AppDomain: XCoder.exe
+#FileName: D:\MyStudy\SourceTreeRoot\git\Code\XCoder\XCoder.exe
+#BaseDirectory: D:\MyStudy\SourceTreeRoot\git\Code\XCoder\
+#ApplicationType: WinForm
+#CLR: 4.0.30319.42000
+#OS: Windows 10.0.14393.0 x64, Administrator/XUDB
+#CPU: Intel(R) Core(TM) i5-3470 CPU @ 3.20GHz BFEBFBFF000306A9
+#Memory: 7,807M/16,338M
+#Date: 2016-11-04
+#字段: 时间 线程ID 线程池Y网页W普通N 线程名 消息内容
+#Fields: Time ThreadID IsPoolThread ThreadName Message
+11:28:03.372  1 N - NewLife.Core v6.0.2016.0706 Build 2016-11-04 11:27:56
+11:28:03.729  1 N - XCoder       v6.8.2016.0504 Build 2016-11-04 11:27:58
+11:28:03.989 23 N 7 自动检测文件19个，发现数据库0个，耗时：00:00:00.0020067！
+11:28:03.992  5 Y 9 XCode        v9.1.2016.0921 Build 2016-11-04 11:27:58
+11:28:03.992  5 Y 9 一级缓存：请求级缓存
+11:28:06.479  4 Y 21 开始检查连接[MyDevSql9.175/MySql]的数据库架构……
+11:28:06.528  4 Y 21 开始初始化实体类Role
+11:28:06.529  4 Y 21 完成初始化实体类Role
+11:28:06.541  4 Y 21 [MyDevSql9.175]的所有实体类（0个）：
+11:28:06.542  4 Y 21 [MyDevSql9.175]需要检查架构的实体类（0个）：
+11:28:06.542  4 Y 21 检查连接[MyDevSql9.175/MySql]的数据库架构耗时63ms
+11:28:06.560  4 Y 21 TypeX.GetType("MySql.Data.MySqlClient.MySqlClientFactory") => Plugins\mysql.data.dll
+11:28:06.700  4 Y 21 [MyDevSql9.175]GetSchema("MetaDataCollections")
+11:28:06.713  4 Y 21 [MyDevSql9.175]GetSchema("Tables")
+11:28:06.727  4 Y 21 [MyDevSql9.175]GetSchema("Columns")
+11:28:06.734  4 Y 21 [MyDevSql9.175]GetSchema("Indexes")
+11:28:06.750  4 Y 21 [MyDevSql9.175]GetSchema("IndexColumns")
+11:28:06.771  4 Y 21 [MyDevSql9.175]GetSchema("DataTypes")
+11:28:18.072  5 Y 9 导致Open错误的连接字符串：Data Source=.;Initial Catalog=master;Integrated Security=True;Application Name=XCode_XCoder.exe_mssql
+11:28:18.073  5 Y 9 [3]GetSchema(MetaDataCollections)异常重试！在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: Named Pipes Provider, error: 40 - 无法打开到 SQL Server 的连接),连接字符串 Data Source=.;Initial Catalog=master;Integrated Security=True;Application Name=XCode_XCoder.exe_mssql
+11:28:18.077  5 Y 9 导致Open错误的连接字符串：Data Source=.;Initial Catalog=master;Integrated Security=True;Application Name=XCode_XCoder.exe_mssql
+11:28:20.522  9 Y 24 导致Open错误的连接字符串：Data Source=S3;Initial Catalog=master;user=sa;password=Pass@word;Application Name=XCode_XCoder.exe_mssql2
+11:28:20.523  9 Y 24 [3]GetSchema(MetaDataCollections)异常重试！在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: Named Pipes Provider, error: 40 - 无法打开到 SQL Server 的连接),连接字符串 Data Source=S3;Initial Catalog=master;user=sa;password=Pass@word;Application Name=XCode_XCoder.exe_mssql2
+11:28:20.523  9 Y 24 导致Open错误的连接字符串：Data Source=S3;Initial Catalog=master;user=sa;password=Pass@word;Application Name=XCode_XCoder.exe_mssql2
+11:28:44.090  1 N - NameSpaceMyNameSpace@MyNameSpace
+
+#Software: 新生命超级码神工具
+#ProcessID: 19016 x64
+#AppDomain: XCoder.exe
+#FileName: D:\MyStudy\SourceTreeRoot\git\Code\XCoder\XCoder.exe
+#BaseDirectory: D:\MyStudy\SourceTreeRoot\git\Code\XCoder\
+#ApplicationType: WinForm
+#CLR: 4.0.30319.42000
+#OS: Windows 10.0.14393.0 x64, Administrator/XUDB
+#CPU: Intel(R) Core(TM) i5-3470 CPU @ 3.20GHz BFEBFBFF000306A9
+#Memory: 8,099M/16,338M
+#Date: 2016-11-04
+#字段: 时间 线程ID 线程池Y网页W普通N 线程名 消息内容
+#Fields: Time ThreadID IsPoolThread ThreadName Message
+11:36:01.954  1 N - NewLife.Core v6.0.2016.0706 Build 2016-11-04 11:27:56
+11:36:02.317  1 N - XCoder       v6.8.2016.0504 Build 2016-11-04 11:36:00
+11:36:02.554  4 Y 3 XCode        v9.1.2016.0921 Build 2016-11-04 11:27:58
+11:36:02.554  4 Y 3 一级缓存：请求级缓存
+11:36:02.558  4 Y 3 开始检查连接[MyDevSql9.175/MySql]的数据库架构……
+11:36:02.594 20 N 5 自动检测文件19个，发现数据库0个，耗时：00:00:00.0021681！
+11:36:02.608  4 Y 3 开始初始化实体类Role
+11:36:02.610  4 Y 3 完成初始化实体类Role
+11:36:02.618  4 Y 3 [MyDevSql9.175]的所有实体类（0个）：
+11:36:02.618  4 Y 3 [MyDevSql9.175]需要检查架构的实体类（0个）：
+11:36:02.618  4 Y 3 检查连接[MyDevSql9.175/MySql]的数据库架构耗时60ms
+11:36:02.634  4 Y 3 TypeX.GetType("MySql.Data.MySqlClient.MySqlClientFactory") => Plugins\mysql.data.dll
+11:36:02.762  4 Y 3 [MyDevSql9.175]GetSchema("MetaDataCollections")
+11:36:02.775  4 Y 3 [MyDevSql9.175]GetSchema("Tables")
+11:36:02.788  4 Y 3 [MyDevSql9.175]GetSchema("Columns")
+11:36:02.796  4 Y 3 [MyDevSql9.175]GetSchema("Indexes")
+11:36:02.811  4 Y 3 [MyDevSql9.175]GetSchema("IndexColumns")
+11:36:02.832  4 Y 3 [MyDevSql9.175]GetSchema("DataTypes")
+11:36:16.674 21 Y 22 导致Open错误的连接字符串：Data Source=.;Initial Catalog=master;Integrated Security=True;Application Name=XCode_XCoder.exe_mssql
+11:36:16.675 21 Y 22 [3]GetSchema(MetaDataCollections)异常重试！在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: Named Pipes Provider, error: 40 - 无法打开到 SQL Server 的连接),连接字符串 Data Source=.;Initial Catalog=master;Integrated Security=True;Application Name=XCode_XCoder.exe_mssql
+11:36:16.678 21 Y 22 导致Open错误的连接字符串：Data Source=.;Initial Catalog=master;Integrated Security=True;Application Name=XCode_XCoder.exe_mssql
+11:36:19.121 18 Y 23 导致Open错误的连接字符串：Data Source=S3;Initial Catalog=master;user=sa;password=Pass@word;Application Name=XCode_XCoder.exe_mssql2
+11:36:19.122 18 Y 23 [3]GetSchema(MetaDataCollections)异常重试！在与 SQL Server 建立连接时出现与网络相关的或特定于实例的错误。未找到或无法访问服务器。请验证实例名称是否正确并且 SQL Server 已配置为允许远程连接。 (provider: Named Pipes Provider, error: 40 - 无法打开到 SQL Server 的连接),连接字符串 Data Source=S3;Initial Catalog=master;user=sa;password=Pass@word;Application Name=XCode_XCoder.exe_mssql2
+11:36:19.122 18 Y 23 导致Open错误的连接字符串：Data Source=S3;Initial Catalog=master;user=sa;password=Pass@word;Application Name=XCode_XCoder.exe_mssql2
+12:08:50.815  5 Y 24 [MyDevSql9.175]GetSchema("Tables")
+12:08:50.833  5 Y 24 [MyDevSql9.175]GetSchema("Columns")
+12:08:50.838  5 Y 24 [MyDevSql9.175]GetSchema("Indexes")
+12:08:50.845  5 Y 24 [MyDevSql9.175]GetSchema("IndexColumns")
+12:08:56.528  1 N - NameSpaceMyNameSpace@MyNameSpace
