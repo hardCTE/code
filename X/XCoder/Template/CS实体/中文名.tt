@@ -100,7 +100,11 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 {
     String des=Field.Description;
     if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
+	if(Field.PrimaryKey){
 #>
+			///<summary>原始主键，<#=des#></summary>
+            public const String Original<#=Field.Name#> = "<#=Field.Name#>";
+<#}#>
             ///<summary><#=des#></summary>
             public const String <#=Field.Name#> = "<#=Field.Name#>";
 <#
@@ -115,7 +119,26 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 {
     String des=Field.Description;
     if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
+
+	if(Field.PrimaryKey){
 #>
+            ///<summary>原始主键,<#=des#></summary>
+            public static readonly Field Original<#=Field.Name#> = new Field
+            {
+                Name = __.Original<#=Field.Name#>,
+				ColumnName = "<#=Field.Name#>",
+                DisplayName = "<#=Field.DisplayName#>",
+                Description = "<#=(""+Field.Description).Replace("\\", "\\\\")#>",
+                DataType = DbType.<#=Field.DataType.Name#>,
+                DefaultValue = <#=Field.Default==null?"null":"\""+Field.Default.Replace("\\", "\\\\")+"\""#>,
+                IsPrimaryKey = <#=Field.PrimaryKey.ToString().ToLower()#>,
+                IsReadonly = false,
+                IsNullable = <#=Field.Nullable.ToString().ToLower()#>,
+                Length = <#=Field.Length#>,
+                Precision = <#=Field.Precision#>,
+                Scale = <#=Field.Scale#>
+			};
+<#}#>
             ///<summary><#=des#></summary>
             public static readonly Field <#=Field.Name#> = new Field
             {
@@ -139,7 +162,9 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 			public static readonly IList<Field> AllFields = new List<Field>
             {<#
 foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
-{#>
+{
+	if(Field.PrimaryKey){#>
+				Original<#=Field.Name#>,<#}#>			
 				<#=Field.Name#>,<#
 }
 #>
