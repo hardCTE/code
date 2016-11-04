@@ -1,0 +1,36 @@
+﻿@using NewLife;
+@using XCode;
+@using XCode.Configuration;
+@{
+    var pair = Model as Pair;
+    var entity = pair.First as IEntity;
+    var item = pair.Second as FieldItem;
+
+    var bs = this.Bootstrap();
+
+    var isInt = item.Type == typeof(Int32);
+    var w = isInt ? 4 : 8;
+
+    var w_md = bs.LabelWidth;
+    if (bs.MaxColumn > 1 && item.Type == typeof(String) && item.Length > 100)
+    {
+        w_md /= 2;
+    }
+}
+<label class="control-label col-xs-2 col-sm-2 col-md-2 col-lg-2">@item.DisplayName</label>
+<div class="input-group col-xs-5 col-sm-5 col-md-5 col-lg-5">
+    @Html.ForEditor(item, entity)
+</div>
+@{
+    ModelState st = null;
+}
+@if (ViewData.ModelState.TryGetValue(item.Name, out st) && st != null && st.Errors.Count > 0)
+{
+    <span class="alert alert-danger">
+        @Html.ValidationMessage(item.Name)
+    </span>
+}
+else if (!item.Description.IsNullOrEmpty())
+{
+    <span class="hidden-xs col-md-5">@Html.ForDescription(item)</span>
+}

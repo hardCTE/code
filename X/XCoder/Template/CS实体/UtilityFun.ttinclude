@@ -1,0 +1,231 @@
+﻿<#@ template language="C#v3.5" debug="true" hostSpecific="true" #>
+<#@ Assembly Name="System.Core" #>
+<#@ Assembly Name="System.Windows.Forms" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #> 
+<#@ Import namespace="System.Text.RegularExpressions" #>
+<#@ assembly name="$(SolutionDir)lib\ref\EmitMapper.dll" #>
+<#@ assembly name="$(SolutionDir)lib\ref\Kalman.dll" #>
+<#@ import namespace="Kalman.Studio.T4TemplateEngineHost" #>
+<#@ import namespace="Kalman.Data.SchemaObject" #>
+<#@ import namespace="Kalman.Utilities" #>
+<#@ import namespace="System.Runtime.Remoting.Messaging" #>
+<# 
+	TableHost incHost = (TableHost)(Host); 
+	SOTable incTable = incHost.Table;
+	List<SOColumn> incColumnlist = incHost.ColumnList;
+	
+	string incNameSpace = incHost.GetString("SettingNameSpace");
+	bool incIsDeleteTablePrefix = incHost.GetBoolean("SettingIsDeleteTablePrefix");
+	string incTablePrefixSeperator = incHost.GetString("SettingTablePrefixSeperator");
+	int incTablePrefixLevel = incHost.GetInt32("SettingTablePrefixLevel");
+	string incClassPrefix = incHost.GetString("SettingClassPrefix");
+	string incClassSuffix = incHost.GetString("SettingClassSuffix");	
+	string incClassName = incHost.GetString("ClassName");
+
+	if(string.IsNullOrEmpty(incNameSpace))incNameSpace = "MasterPoints";
+#><#+ 
+	// Database all tables				 
+	public List<SOTable> GetDababaseTables(SOTable table)
+	{
+        return table.Database.TableList;
+	}
+
+	// 获取主键列
+	public IList<SOColumn> GetKeyFields(TableHost host)
+	{
+        return host.ColumnList.Where(p => p.PrimaryKey).ToList();
+    }
+
+	// 是否包含自增主键
+	public SOColumn GetContainAutoKeyColumn(TableHost host)
+    {
+		return host.ColumnList.FirstOrDefault(p => p.PrimaryKey && p.Identify);
+	}
+
+	// 获取列的默认排序
+	public string GetDefaultSort(IList<SOColumn> columnList)
+    {
+		return columnList.Any(p => string.Equals(p.Name,"DOrder",StringComparison.CurrentCultureIgnoreCase))
+					? "DOrder Desc"
+					: string.Empty;
+	}
+
+	// 获取table摘要信息 comment or name
+	public string GetTableSummaryInfo(SOTable table)
+    {
+		var strSummaryComment = GetSummaryComment(table.Comment, "");
+		return string.IsNullOrEmpty(strSummaryComment) ? table.Name : strSummaryComment;
+	}
+
+	// MySQL NaviteType to TypeString
+	public string MySqlDbType2TypeStringPlus(string nativeType)
+    {
+		var curDbType = nativeType.Trim().ToLower() == "bool" ? DbType.Boolean : TypeUtil.MySqlDataType2DbType(nativeType.Trim());
+		return Kalman.Utilities.TypeUtil.DbType2TypeString(curDbType);
+	}
+
+	// 获取摘要备注 // 匹配() \r\n
+	public string GetSummaryComment(string strComment, string targetSign)
+    {
+        if (string.IsNullOrEmpty(strComment))
+        {
+			return String.Empty;
+        }
+
+		var regComment = new Regex(@"[\(（]([^()（）]*)[\)）]|\r\n", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture);
+		return regComment.Replace(strComment,targetSign);
+	}
+
+	// 格式化字符串信息 将原标志替换为格式化为目标标志
+	public string Origin2Target(string strComment, string originSign, string targetSign)
+    {
+        if (string.IsNullOrEmpty(strComment) || string.IsNullOrEmpty(originSign))
+        {
+			return strComment;
+        }
+
+		return strComment.Replace(originSign, targetSign);
+	}
+
+	// 将第一个词置为大写
+	public string ToFirstUpper(string strRaw)
+    {
+        if (string.IsNullOrEmpty(strRaw))
+        {
+			return string.Empty;
+        }
+
+		return string.Concat(strRaw.Substring(0, 1).ToUpper(), strRaw.Substring(1));
+	}
+
+	// 将第一个词置为小写
+	public string ToFirstLower(string strRaw)
+    {
+        if (string.IsNullOrEmpty(strRaw))
+        {
+			return string.Empty;
+        }
+
+		return string.Concat(strRaw.Substring(0, 1).ToLower(), strRaw.Substring(1));
+	}
+
+	// 根据数据类型获取 数据范围(是否限制范围,范围1,范围2)
+	// Result: 最大值 最小值
+	public string GetStringDataRangeByDataType(DbType dbType)
+	{
+		var result = string.Empty;
+
+        const string resultExpression = "min='{0}' max='{1}'";
+            
+        switch (dbType)
+        {
+            case DbType.Byte:
+                result = string.Format(resultExpression, 0, 255);
+                break;
+                //case DbType.Decimal:
+                //    result = string.Format(resultExpression, -79228162514264337593543950335m, 79228162514264337593543950335m);
+                //    break;
+                //case DbType.Double:
+                //    result = string.Format(resultExpression, , );
+                //    break;
+            case DbType.Int16:
+                result = string.Format(resultExpression, -32768, 32767);
+                break;
+            case DbType.Int32:
+                result = string.Format(resultExpression, -2147483648, 2147483647);
+                break;
+            case DbType.Int64:
+                result = string.Format(resultExpression, -9223372036854775808L, 9223372036854775807L);
+                break;
+            case DbType.SByte:
+                result = string.Format(resultExpression, -128, 127);
+                break;
+                //case DbType.Single:
+                //    result = string.Format(resultExpression, , );
+                //    break;
+            case DbType.UInt16:
+                result = string.Format(resultExpression, 0, 65535);
+                break;
+            case DbType.UInt32:
+                result = string.Format(resultExpression, 0, 4294967295U);
+                break;
+            case DbType.UInt64:
+                result = string.Format(resultExpression, 0, 18446744073709551615UL);
+                break;
+            default:
+                break;
+        }
+
+        return result;
+    }
+
+	/// <summary>
+    /// 将host 的 key字段 转为格式化的 字符串
+    /// </summary>
+    /// <param name="host">Host</param>
+    /// <param name="formatFunc">格式化方式</param>
+    /// <param name="separatorKey">分隔符</param>
+    /// <returns></returns>
+    public string ConvertHostKeyColumns2FormatString(TableHost host, Func<SOColumn,string> formatFunc,string separatorKey)
+    {
+        var keyColumns = host.Table.PrimaryKeys;
+        if (!keyColumns.Any())
+        {
+            return string.Empty;
+        }
+
+        return string.Join(separatorKey, keyColumns.Select(formatFunc).ToArray());
+    }
+
+	/// 移除前缀
+	public string RemoveStringPrefix(string s, string separator, int level)
+    {
+      if (!string.IsNullOrEmpty(separator))
+      {
+        for (int index = 0; index < level; ++index)
+        {
+          int count = s.IndexOf(separator) + 1;
+          if (count != 0)
+            s = s.Remove(0, count);
+          else
+            break;
+        }
+      }
+      return s;
+    }
+
+	/// <summary>
+    /// 根据Table获取类名
+    /// </summary>
+    /// <param name="table">sotable</param>
+    /// <returns></returns>
+	public string GetClassNameByTable(TableHost host,SOTable table)
+    {
+        if (table == null)
+        {
+			return string.Empty;
+        }
+
+		var result = table.Name;
+
+		bool isDeleteTablePrefix = host.GetBoolean("SettingIsDeleteTablePrefix");
+		string tablePrefixSeperator = host.GetString("SettingTablePrefixSeperator");
+		int tablePrefixLevel = host.GetInt32("SettingTablePrefixLevel");
+		string classPrefix = host.GetString("SettingClassPrefix");
+		string classSuffix = host.GetString("SettingClassSuffix");	
+		
+		if (isDeleteTablePrefix) // 去除表前缀
+			result = Kalman.Utilities.StringUtil.RemovePrefix(result, tablePrefixSeperator, tablePrefixLevel).Replace(" ", "");
+
+        // 加上前后缀
+		result = string.Format("{0}{1}{2}", classPrefix, result, classSuffix);
+		return result;
+	}
+#>

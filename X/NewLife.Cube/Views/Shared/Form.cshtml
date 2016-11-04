@@ -1,0 +1,28 @@
+﻿@using System.Reflection
+@using XCode
+@using XCode.Configuration
+@{
+    Layout = "~/Views/Shared/_Ace_Layout.cshtml";
+    var fact = ViewBag.Factory as IEntityOperate;
+    var fields = ViewBag.Fields as List<FieldItem>;
+    var entity = Model as IEntity;
+    var isNew = entity.IsNullKey;
+}
+
+<div class="form-horizontal">
+    @Html.Partial("_Form_Header", entity)
+    @using (Html.BeginForm((isNew ? "Add" : "Edit"), null, new { id = Model[fact.Unique.Name] }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary()
+        foreach (var item in fields)
+        {
+            if (!item.PrimaryKey)
+            {
+                @Html.Partial("_Form_Group", new Pair(Model, item))
+            }
+        }
+        @Html.Partial("_Form_Footer", entity)
+        @Html.Partial("_Form_Action", entity)
+    }
+</div>

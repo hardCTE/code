@@ -1,0 +1,39 @@
+﻿@using System.ComponentModel;
+@using System.Reflection;
+@using NewLife.Reflection;
+@{
+    Layout = "~/Views/Shared/_Ace_Layout.cshtml";
+
+    var Obj = Model as Object;
+    var pis = ViewBag.Properties as IEnumerable<PropertyInfo>;
+
+    var bs = this.Bootstrap();
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-horizontal">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                foreach (var pi in pis)
+                {
+                    var name = pi.Name;
+                    <div class="form-group col-sm-12 col-md-@bs.GetGroupWidth()">
+                        <label class="control-label col-xs-2 col-md-@bs.LabelWidth no-padding-left" for="@pi.Name">@(pi.GetDisplayName() ?? pi.Name)</label>
+                        <div class="input-group col-xs-10 col-md-8">
+                            @Html.ForEditor(pi.Name, Obj.GetValue(pi), pi.PropertyType)
+                            @Html.ValidationMessage(pi.Name)
+                            <span>&nbsp; @pi.GetDescription()</span>
+                        </div>
+                    </div>
+                }
+                <div class="clearfix form-actions col-sm-12 col-md-12">
+                    <label class="control-label col-xs-4 col-sm-5 col-md-5"></label>
+                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-save"></i><strong>保存</strong></button>
+                    <button type="button" class="btn btn-danger" onclick="history.go(-1);"><i class="glyphicon glyphicon-remove"></i><strong>取消</strong></button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
