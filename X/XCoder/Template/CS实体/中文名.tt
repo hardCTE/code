@@ -13,14 +13,14 @@ namespace <#=Config.NameSpace#>
     #>
     /// <summary><#=tdis#></summary><# if(tdis!=tdes){#>
 	/// <remarks><#=tdes#></remarks><#}#>
-    [Description("<#=tdes#>")]<#
+    ///[Description("<#=tdes#>")]<#
 foreach(IDataIndex di in Table.Indexes){if(di.Columns==null||di.Columns.Length<1)continue;#>
-    [BindIndex("<#=di.Name#>", <#=di.Unique.ToString().ToLower()#>, "<#=String.Join(",", di.Columns)#>")]<#
+    ///[BindIndex("<#=di.Name#>", <#=di.Unique.ToString().ToLower()#>, "<#=String.Join(",", di.Columns)#>")]<#
 }
 foreach(IDataRelation dr in Table.Relations){#>
-    [BindRelation("<#=dr.Column#>", <#=dr.Unique.ToString().ToLower()#>, "<#=dr.RelationTable#>", "<#=dr.RelationColumn#>")]<#}#>
-    [BindTable("<#=Table.TableName#>", Description = "<#=tdes#>", ConnName = "<#=Table.ConnName ?? Config.EntityConnName#>", DbType = DatabaseType.<#=Table.DbType#><#if(Table.IsView){#>, IsView = true<#}#>)]
-    public partial class <#=Table.Name#>Dal
+    ///[BindRelation("<#=dr.Column#>", <#=dr.Unique.ToString().ToLower()#>, "<#=dr.RelationTable#>", "<#=dr.RelationColumn#>")]<#}#>
+    ///[BindTable("<#=Table.TableName#>", Description = "<#=tdes#>", ConnName = "<#=Table.ConnName ?? Config.EntityConnName#>", DbType = DatabaseType.<#=Table.DbType#><#if(Table.IsView){#>, IsView = true<#}#>)]
+    public partial class <#=Table.Name#> : TableModelBase
     {<#
 if(Table.Columns.Count>0)
 {
@@ -32,14 +32,36 @@ if(Table.Columns.Count>0)
         if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
         String dis = Field.DisplayName;
         if(!String.IsNullOrEmpty(dis)) dis=dis.Replace("\r\n"," ").Replace("'", " ").Replace("\"", "");
+
+		var fieldType = Field.DataType==null?"":Field.DataType.Name;
+
+		if(Field.Nullable && fieldType != "String"){
+			fieldType = fieldType + "?";
+		}
+
 #>
         /// <summary><#=des#></summary>
-		public virtual <#=Field.DataType==null?"":Field.DataType.Name#> <#=Field.Name#> { get; set; }
+		public virtual <#=fieldType#> <#=Field.Name#> { get; set; }
 <#
     }
 #>        #endregion
 
-        #region 获取/设置 字段值
+        #region 实现抽象类方法
+
+		/// <summary>
+        /// 数据库表名
+        /// </summary>
+        public override string DataBaseTableName => __.DataBaseTableName;
+
+        /// <summary>
+        /// 获取模型所有字段
+        /// </summary>
+        /// <returns></returns>
+        public override IList<Field> GetAllFields()
+        {
+            return _.AllFields;
+        }
+
         /// <summary>
         /// 获取/设置 字段值。
         /// 一个索引，基类使用反射实现。
@@ -47,7 +69,7 @@ if(Table.Columns.Count>0)
         /// </summary>
         /// <param name="name">字段名</param>
         /// <returns></returns>
-        public virtual Object this[String name]
+        public override Object this[String name]
         {
             get
             {
