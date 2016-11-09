@@ -1,0 +1,457 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+﻿using App.DAL;
+
+namespace <#=Config.NameSpace#>
+{<#
+    String tdis=Table.DisplayName;
+    if(!String.IsNullOrEmpty(tdis)) tdis=tdis.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
+    String tdes=Table.Description;
+    if(!String.IsNullOrEmpty(tdes)) tdes=tdes.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
+    if(String.IsNullOrEmpty(tdis)) tdis=tdes;
+    #>
+    public partial class <#=Table.Name#>Dal : DbBase
+    {
+		#region 定义
+
+        public <#=Table.Name#>Dal(IDbConnection dbCon = null) : base(dbCon)
+        {
+		}
+
+        #endregion
+
+		#region 查询
+
+        // todo:唯一索引（条件查询、是否存在）
+
+        #region 按键及索引 查询
+<#
+foreach(IDataIndex di in Table.Indexes){
+	if(di.Columns==null||di.Columns.Length<1)continue;
+
+	if(di.Name.ToLower() == "primary"){
+		var keyFields = Table.Columns.Where(p => di.Columns.Contain(p));
+		keyFields.Select(p => p.DataType == null ? "" : 
+		var strColPara = String.Join(",",
+	#>
+		/// <summary>
+        /// 根据主键获取EO
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+		String colDescr=Field.Description;
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
+	#>
+		/// <param name="<#=Field.Name#>"><#=colDescr#></param>
+	<#}#>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual <#=Table.Name#> GetByPk(Int64 id, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE id = @Id";
+
+            var sql = string.Format(format, <#=Table.Name#>.__.DataBaseTableName);
+
+            return DbConn.QueryFirst<<#=Table.Name#>>(
+                sql: sql,
+                param: new {Id = id},
+                transaction: tran);
+        }
+<#			
+	}else if(di.Unique){
+#>
+<#
+	}else{
+#>
+<#
+	}
+}
+#>
+
+        /// <summary>
+        /// 根据主键获取EO
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual TbIpBlackList GetByPk(Int64 id, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE id = @Id";
+
+            var sql = string.Format(format, TbIpBlackList.__.DataBaseTableName);
+
+            return DbConn.QueryFirst<TbIpBlackList>(
+                sql: sql,
+                param: new {Id = id},
+                transaction: tran);
+        }
+
+        /// <summary>
+        /// 根据索引 idx_ip(ip列)查询列表
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual IEnumerable<TbIpBlackList> GetByIp(string ip, IDbTransaction tran = null)
+        {
+            return GetByIp(ip, 0, null, tran);
+        }
+
+        /// <summary>
+        /// 根据索引 idx_ip(ip列)查询列表
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="top">获取行数</param>
+        /// <param name="sort">排序方式</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual IEnumerable<TbIpBlackList> GetByIp(string ip, int top, string sort, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE ip = @Ip {1} {2}";
+
+            var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (top > 0)
+            {
+                limitClause = "LIMIT " + top;
+            }
+
+            var sql = string.Format(format,
+                TbIpBlackList.__.DataBaseTableName,
+                sortClause, limitClause);
+
+            return DbConn.Query<TbIpBlackList>(
+                sql: sql,
+                param: new {Ip = ip},
+                transaction: tran);
+        }
+
+        #endregion
+
+        #region 自定义查询
+
+        /// <summary>
+        /// 自定义条件查询
+        /// </summary>
+        /// <param name="where">自定义条件，where子句（不包含关键字Where）</param>
+        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <param name="top">获取行数</param>
+        /// <param name="sort">排序方式(不包含关键字Order By)</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual IEnumerable<TbIpBlackList> GetTopSort(string where, object param = null,
+            int top = 0, string sort = null, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} {1} {2} {3}";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (top > 0)
+            {
+                limitClause = "LIMIT " + top;
+            }
+
+            var sql = string.Format(format,
+                TbIpBlackList.__.DataBaseTableName,
+                whereClause, sortClause, limitClause);
+
+            return DbConn.Query<TbIpBlackList>(
+                sql: sql,
+                param: param,
+                transaction: tran);
+        }
+
+        #endregion
+
+        #region 分页
+
+        /// <summary>
+        /// 分页信息
+        /// </summary>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="where">过滤条件</param>
+        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <returns>
+        /// Item1: 总记录数
+        /// Item2: 页数
+        /// </returns>
+        public virtual Tuple<Int64, Int64> GetPageInfo(int pageSize, string where = null, object param = null)
+        {
+            const string format = @"SELECT COUNT(*) FROM {0} {1}";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sql = string.Format(format,
+                TbIpBlackList.__.DataBaseTableName,
+                whereClause);
+
+            var recordCount = DbConn.ExecuteScalar<Int64>(sql, param);
+
+            var pageCount = 1L;
+            if (pageSize != 0)
+            {
+                var lastPageCount = recordCount%pageSize;
+                pageCount = recordCount/pageSize + (lastPageCount > 0 ? 1 : 0);
+            }
+
+            return new Tuple<long, long>(recordCount, pageCount);
+        }
+
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页索引（从1开始）</param>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="where">过滤条件</param>
+        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <param name="sort">排序方式(不包含关键字Order By)</param>
+        /// <returns></returns>
+        public virtual IEnumerable<TbIpBlackList> GetPageList(Int64 pageIndex, int pageSize,
+            string where = null, object param = null, string sort = null)
+        {
+            const string format = "SELECT * FROM {0} {1} {2} {3};";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (pageIndex > 0 && pageSize > 0)
+            {
+                limitClause = $"LIMIT {(pageSize - 1L)*pageSize},{pageSize}";
+            }
+
+            var sql = string.Format(format,
+                TbIpBlackList.__.DataBaseTableName,
+                whereClause, sortClause, limitClause);
+
+            return DbConn.Query<TbIpBlackList>(
+                sql: sql,
+                param: param);
+        }
+
+        #endregion
+
+        #endregion
+	<#
+if(Table.Columns.Count>0)
+{
+#>
+        #region 属性<#
+    foreach(IDataColumn Field in Table.Columns)
+    {
+        String des=Field.Description;
+        if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
+        String dis = Field.DisplayName;
+        if(!String.IsNullOrEmpty(dis)) dis=dis.Replace("\r\n"," ").Replace("'", " ").Replace("\"", "");
+
+		var fieldType = Field.DataType==null?"":Field.DataType.Name;
+
+		if(Field.Nullable && fieldType != "String"){
+			fieldType = fieldType + "?";
+		}
+
+#>
+        /// <summary><#=des#></summary>
+		public virtual <#=fieldType#> <#=Field.Name#> { get; set; }
+<#
+    }
+#>        #endregion
+
+        #region 实现抽象类方法
+
+		/// <summary>
+        /// 数据库表名
+        /// </summary>
+        public override string DataBaseTableName => __.DataBaseTableName;
+
+        /// <summary>
+        /// 获取模型所有字段
+        /// </summary>
+        /// <returns></returns>
+        public override IList<Field> GetAllFields()
+        {
+            return _.AllFields;
+        }
+
+        /// <summary>
+        /// 获取/设置 字段值。
+        /// 一个索引，基类使用反射实现。
+        /// 派生实体类可重写该索引，以避免反射带来的性能损耗
+        /// </summary>
+        /// <param name="name">字段名</param>
+        /// <returns></returns>
+        public override Object this[String name]
+        {
+            get
+            {
+                switch (name)
+                {<#
+    foreach(IDataColumn Field in Table.Columns)
+    {
+#>
+                    case __.<#=Field.Name#> : return <#=Field.Name#>;<#
+    }
+#>
+                    default: return null;
+                }
+            }
+            set
+            {
+                switch (name)
+                {<#
+    Type conv=typeof(Convert);
+    foreach(IDataColumn Field in Table.Columns)
+    { 
+        if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
+#>
+                    case __.<#=Field.Name#> : <#=Field.Name#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
+        }else{
+#>
+                    case __.<#=Field.Name#> : <#=Field.Name#> = (<#=Field.DataType.Name#>)value; break;<#
+        }
+    }
+#>
+                    default: break;
+				}
+            }
+        }
+        #endregion
+<#
+}
+#>
+        #region 字段信息
+
+		/// <summary>取得<#=tdis#>字段名称的快捷方式</summary>
+        public partial class __
+        {
+			/// <summary>
+            /// 数据库表名
+            /// </summary>
+            public const string DataBaseTableName = "<#=Table.TableName#>";
+<#
+foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+    String des=Field.Description;
+    if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
+	if(Field.PrimaryKey){
+#>
+			///<summary>原始主键，<#=des#></summary>
+            public const String Original<#=Field.Name#> = "<#=Field.Name#>";
+<#}#>
+            ///<summary><#=des#></summary>
+            public const String <#=Field.Name#> = "<#=Field.Name#>";
+<#
+}
+#>
+        }
+
+        /// <summary>取得<#=tdis#>字段信息的快捷方式</summary>
+        public partial class _
+        {<#
+foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+    String des=Field.Description;
+    if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
+
+	if(Field.PrimaryKey){
+#>
+            ///<summary>原始主键,<#=des#></summary>
+            public static readonly Field Original<#=Field.Name#> = new Field
+            {
+                Name = __.Original<#=Field.Name#>,
+				ColumnName = "<#=Field.Name#>",
+                DisplayName = "<#=Field.DisplayName#>",
+                Description = "<#=(""+Field.Description).Replace("\\", "\\\\")#>",
+                DataType = DbType.<#=Field.DataType.Name#>,
+                DefaultValue = <#=Field.Default==null?"null":"\""+Field.Default.Replace("\\", "\\\\")+"\""#>,
+                IsPrimaryKey = <#=Field.PrimaryKey.ToString().ToLower()#>,
+				Identity = <#=Field.Identity.ToString().ToLower()#>,
+                IsReadonly = true,
+                IsNullable = <#=Field.Nullable.ToString().ToLower()#>,
+                Length = <#=Field.Length#>,
+                Precision = <#=Field.Precision#>,
+                Scale = <#=Field.Scale#>
+			};
+<#}#>
+            ///<summary><#=des#></summary>
+            public static readonly Field <#=Field.Name#> = new Field
+            {
+                Name = __.<#=Field.Name#>,
+				ColumnName = "<#=Field.Name#>",
+                DisplayName = "<#=Field.DisplayName#>",
+                Description = "<#=(""+Field.Description).Replace("\\", "\\\\")#>",
+                DataType = DbType.<#=Field.DataType.Name#>,
+                DefaultValue = <#=Field.Default==null?"null":"\""+Field.Default.Replace("\\", "\\\\")+"\""#>,
+                IsPrimaryKey = <#=Field.PrimaryKey.ToString().ToLower()#>,
+				Identity = <#=Field.Identity.ToString().ToLower()#>,
+                IsReadonly = false,
+                IsNullable = <#=Field.Nullable.ToString().ToLower()#>,
+                Length = <#=Field.Length#>,
+                Precision = <#=Field.Precision#>,
+                Scale = <#=Field.Scale#>
+			};
+<#
+}
+#>
+			///<summary>所有字段列表</summary>
+			public static readonly IList<Field> AllFields = new List<Field>
+            {<#
+foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+	if(Field.PrimaryKey){#>
+				Original<#=Field.Name#>,<#}#>			
+				<#=Field.Name#>,<#
+}
+#>
+            };
+
+        }
+
+        #endregion
+    }
+}

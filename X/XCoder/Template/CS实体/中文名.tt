@@ -33,12 +33,7 @@ if(Table.Columns.Count>0)
         String dis = Field.DisplayName;
         if(!String.IsNullOrEmpty(dis)) dis=dis.Replace("\r\n"," ").Replace("'", " ").Replace("\"", "");
 
-		var fieldType = Field.DataType==null?"":Field.DataType.Name;
-
-		if(Field.Nullable && fieldType != "String"){
-			fieldType = fieldType + "?";
-		}
-
+		var fieldType = XCoder.TemplateHelper.FormatUtil.GetFieldTypeString(Field);
 #>
         /// <summary><#=des#></summary>
 		public virtual <#=fieldType#> <#=Field.Name#> { get; set; }
