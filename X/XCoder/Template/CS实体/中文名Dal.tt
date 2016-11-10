@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using App.FrameCore;
+using Dapper;
 ﻿using App.DAL;
 
 namespace <#=Config.NameSpace#>
@@ -12,6 +14,9 @@ namespace <#=Config.NameSpace#>
     if(String.IsNullOrEmpty(tdis)) tdis=tdes;
 	var modelName = TemplateHelper.FormatUtil.ToCodeName(Table.Name);
     #>
+	/// <summary>
+    /// <#=modelName#> 数据访问层
+    /// </summary>
     public partial class <#=modelName#>Dal : DbBase
     {
 		#region 定义
@@ -30,22 +35,22 @@ foreach(IDataIndex di in Table.Indexes){
 	if(di.Columns==null||di.Columns.Length<1)continue;
 
 	var idxName = TemplateHelper.FormatUtil.ToCodeName(di.Name);
-	var keyFields = Table.Columns.Where(p => di.Columns.Contain(p));
+	var keyFields = Table.Columns.Where(p => di.Columns.Contains(p.Name));
 
 	// 函数参数列表
-	var paraList = keyFields.Select(p => string.format("{0} {1}",
+	var paraList = keyFields.Select(p => string.Format("{0} {1}",
 			TemplateHelper.FormatUtil.ToFieldTypeString(p),
 			TemplateHelper.FormatUtil.ToParamName(p.Name)));
 	var strParas = String.Join(",", paraList);
 
 	// sql语句中参数
-	var sqlParaList = keyFields.Select(p => string.format("{0}=@{1}",
+	var sqlParaList = keyFields.Select(p => string.Format("{0}=@{1}",
 			p.Name,
 			TemplateHelper.FormatUtil.ToCodeName(p.Name)));
 	var strSqlPara = String.Join(" and ", sqlParaList);
 
 	// sql对象
-	var sqlObjList = keyFields.Select(p => string.format("{0} = {1}",
+	var sqlObjList = keyFields.Select(p => string.Format("{0} = {1}",
 			TemplateHelper.FormatUtil.ToCodeName(p.Name),
 			TemplateHelper.FormatUtil.ToParamName(p.Name)));
 	var strSqlObj = String.Join(" , ", sqlObjList);
@@ -58,9 +63,8 @@ foreach(IDataIndex di in Table.Indexes){
 	<#
 	foreach(IDataColumn Field in keyFields){
 		String colDescr=Field.Description;
-        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
-	#>
-		/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
+	#>	/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
 	<#}#>
         /// <param name="tran">事务</param>
         /// <returns></returns>

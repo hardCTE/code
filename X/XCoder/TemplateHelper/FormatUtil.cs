@@ -55,7 +55,7 @@ namespace TemplateHelper
                 return "_" + name;
             }
 
-            return "_" + char.ToUpper(name[0]) + name.Substring(1);
+            return "_" + char.ToLower(name[0]) + name.Substring(1);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace TemplateHelper
                 return name;
             }
 
-            return char.ToUpper(name[0]) + name.Substring(1);
+            return char.ToLower(name[0]) + name.Substring(1);
         }
     }
 }
