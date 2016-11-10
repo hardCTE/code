@@ -24,21 +24,33 @@ namespace <#=Config.NameSpace#>
 
 		#region 查询
 
-        // todo:唯一索引（条件查询、是否存在）
-
         #region 按键及索引 查询
 <#
 foreach(IDataIndex di in Table.Indexes){
 	if(di.Columns==null||di.Columns.Length<1)continue;
 
+	var idxName = TemplateHelper.FormatUtil.ToCodeName(di.Name);
+	var keyFields = Table.Columns.Where(p => di.Columns.Contain(p));
+
+	// 函数参数列表
+	var paraList = keyFields.Select(p => string.format("{0} {1}",
+			TemplateHelper.FormatUtil.ToFieldTypeString(p),
+			TemplateHelper.FormatUtil.ToParamName(p.Name)));
+	var strParas = String.Join(",", paraList);
+
+	// sql语句中参数
+	var sqlParaList = keyFields.Select(p => string.format("{0}=@{1}",
+			p.Name,
+			TemplateHelper.FormatUtil.ToCodeName(p.Name)));
+	var strSqlPara = String.Join(" and ", sqlParaList);
+
+	// sql对象
+	var sqlObjList = keyFields.Select(p => string.format("{0} = {1}",
+			TemplateHelper.FormatUtil.ToCodeName(p.Name),
+			TemplateHelper.FormatUtil.ToParamName(p.Name)));
+	var strSqlObj = String.Join(" , ", sqlObjList);
+
 	if(di.Name.ToLower() == "primary"){
-		var keyFields = Table.Columns.Where(p => di.Columns.Contain(p));
-
-		var fieldType = ;
-		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
-
-		keyFields.Select(p => string.format("{0} {1}",TemplateHelper.FormatUtil.ToFieldTypeString(p),TemplateHelper.FormatUtil.ToCodeName(p.Name));
-		var strColPara = String.Join(",",
 	#>
 		/// <summary>
         /// 根据主键获取EO
@@ -48,24 +60,47 @@ foreach(IDataIndex di in Table.Indexes){
 		String colDescr=Field.Description;
         if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
 	#>
-		/// <param name="<#=Field.Name#>"><#=colDescr#></param>
+		/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
 	<#}#>
         /// <param name="tran">事务</param>
         /// <returns></returns>
-        public virtual <#=Table.Name#> GetByPk(Int64 id, IDbTransaction tran = null)
+        public virtual <#=modelName#> GetByPk(<#=strParas#>, IDbTransaction tran = null)
         {
-            const string format = "SELECT * FROM {0} WHERE id = @Id";
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#>";
 
-            var sql = string.Format(format, <#=Table.Name#>.__.DataBaseTableName);
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
 
-            return DbConn.QueryFirst<<#=Table.Name#>>(
+            return DbConn.QueryFirst<<#=modelName#>>(
                 sql: sql,
-                param: new {Id = id},
+                param: new {<#=strSqlObj#>},
                 transaction: tran);
         }
 <#			
 	}else if(di.Unique){
 #>
+		/// <summary>
+        /// 根据唯一索引获取EO
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+		String colDescr=Field.Description;
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
+	#>
+		/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
+	<#}#>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual <#=modelName#> GetByUk<#=idxName#>(<#=strParas#>, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#>";
+
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+
+            return DbConn.QueryFirst<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
 <#
 	}else{
 #>

@@ -42,14 +42,32 @@ namespace TemplateHelper
         }
 
         /// <summary>
-        /// 将一个名称转换为程序内部使用的名称(合法的变量名称)
+        /// 将一个名称转换为私有变量名称(合法的变量名称)
+        /// Eg:_abcAbc
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string ToPrivatePropertyName(string name)
+        public static string ToPrivateName(string name)
         {
             name = (name ?? string.Empty).ToCodeName();
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name) || name.Length < 2)
+            {
+                return "_" + name;
+            }
+
+            return "_" + char.ToUpper(name[0]) + name.Substring(1);
+        }
+
+        /// <summary>
+        /// 将一个名称转换为参数名称(合法的变量名称)
+        /// Eg:abcAbc
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string ToParamName(string name)
+        {
+            name = (name ?? string.Empty).ToCodeName();
+            if (string.IsNullOrWhiteSpace(name) || name.Length < 2)
             {
                 return name;
             }
