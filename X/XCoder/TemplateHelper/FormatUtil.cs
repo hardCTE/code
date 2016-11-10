@@ -74,5 +74,20 @@ namespace TemplateHelper
 
             return char.ToLower(name[0]) + name.Substring(1);
         }
+
+        /// <summary>
+        /// 将字符串转为单行显示格式
+        /// </summary>
+        /// <param name="raw"></param>
+        /// <returns></returns>
+        public static string ToSigleDisplay(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                return string.Empty;
+            }
+
+            return raw.Replace("\r\n", " ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
+        }
     }
 }

@@ -352,6 +352,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Template\CS实体\中文名.tt" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Template\CS实体\中文名Dal2.tt" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
