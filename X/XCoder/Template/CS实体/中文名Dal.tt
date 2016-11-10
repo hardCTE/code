@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using App.FrameCore;
 using Dapper;
-﻿using App.DAL;
 
 namespace <#=Config.NameSpace#>
 {<#
@@ -65,8 +64,7 @@ foreach(IDataIndex di in Table.Indexes){
 		String colDescr=Field.Description;
         if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
 	#>	/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
-	<#}#>
-        /// <param name="tran">事务</param>
+	<#}#>	/// <param name="tran">事务</param>
         /// <returns></returns>
         public virtual <#=modelName#> GetByPk(<#=strParas#>, IDbTransaction tran = null)
         {
@@ -88,11 +86,9 @@ foreach(IDataIndex di in Table.Indexes){
 	<#
 	foreach(IDataColumn Field in keyFields){
 		String colDescr=Field.Description;
-        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
-	#>
-		/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
-	<#}#>
-        /// <param name="tran">事务</param>
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
+	#>	/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
+	<#}#>	/// <param name="tran">事务</param>
         /// <returns></returns>
         public virtual <#=modelName#> GetByUk<#=idxName#>(<#=strParas#>, IDbTransaction tran = null)
         {
@@ -108,41 +104,50 @@ foreach(IDataIndex di in Table.Indexes){
 <#
 	}else{
 #>
+		/// <summary>
+        /// 根据索引获取EO列表
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+		String colDescr=Field.Description;
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
+	#>	/// <param name="<#=TemplateHelper.FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
+	<#}#>	/// <param name="top">获取行数(默认为0，即所有)</param>
+        /// <param name="sort">排序方式</param>
+		/// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual IEnumerable<<#=modelName#>> GetByIdx<#=idxName#>(<#=strParas#>, int top = 0, string sort = null, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#> {1} {2}";
+
+			var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (top > 0)
+            {
+                limitClause = "LIMIT " + top;
+            }
+
+            var sql = string.Format(format, 
+				<#=modelName#>._.DataBaseTableName,
+				sortClause, limitClause);
+
+            return DbConn.Query<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
 <#
 	}
 }
 #>
 
-        /// <summary>
-        /// 根据主键获取EO
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="tran">事务</param>
-        /// <returns></returns>
-        public virtual TbIpBlackList GetByPk(Int64 id, IDbTransaction tran = null)
-        {
-            const string format = "SELECT * FROM {0} WHERE id = @Id";
-
-            var sql = string.Format(format, TbIpBlackList.__.DataBaseTableName);
-
-            return DbConn.QueryFirst<TbIpBlackList>(
-                sql: sql,
-                param: new {Id = id},
-                transaction: tran);
-        }
-
-        /// <summary>
-        /// 根据索引 idx_ip(ip列)查询列表
-        /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="tran">事务</param>
-        /// <returns></returns>
-        public virtual IEnumerable<TbIpBlackList> GetByIp(string ip, IDbTransaction tran = null)
-        {
-            return GetByIp(ip, 0, null, tran);
-        }
-
-        /// <summary>
+      
+       /// <summary>
         /// 根据索引 idx_ip(ip列)查询列表
         /// </summary>
         /// <param name="ip"></param>
