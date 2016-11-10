@@ -53,25 +53,25 @@ namespace CS实体
         {
             
             #line 1 "中文名Dal.tt"
-            this.Write("﻿using System;\r\nusing System.Collections.Generic;\r\nusing System.Data;\r\nusing App." +
-                    "FrameCore;\r\nusing Dapper;\r\n\r\nnamespace ");
-            
-            #line default
-            #line hidden
-            
-            #line 7 "中文名Dal.tt"
-            this.Write(Config.NameSpace);
-            
-            #line default
-            #line hidden
-            
-            #line 7 "中文名Dal.tt"
-            this.Write("\r\n{");
+            this.Write("﻿using System;\r\nusing System.Collections.Generic;\r\nusing System.Data;\r\nusing Syst" +
+                    "em.Linq;\r\nusing App.FrameCore;\r\nusing Dapper;\r\n\r\nnamespace ");
             
             #line default
             #line hidden
             
             #line 8 "中文名Dal.tt"
+            this.Write(Config.NameSpace);
+            
+            #line default
+            #line hidden
+            
+            #line 8 "中文名Dal.tt"
+            this.Write("\r\n{");
+            
+            #line default
+            #line hidden
+            
+            #line 9 "中文名Dal.tt"
 
 	var modelName = FormatUtil.ToCodeName(Table.Name);
 
@@ -79,50 +79,50 @@ namespace CS实体
             #line default
             #line hidden
             
-            #line 10 "中文名Dal.tt"
+            #line 11 "中文名Dal.tt"
             this.Write("\r\n\t/// <summary>\r\n    /// ");
             
             #line default
             #line hidden
             
-            #line 12 "中文名Dal.tt"
+            #line 13 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 12 "中文名Dal.tt"
+            #line 13 "中文名Dal.tt"
             this.Write(" 数据访问层\r\n    /// </summary>\r\n    public partial class ");
             
             #line default
             #line hidden
             
-            #line 14 "中文名Dal.tt"
+            #line 15 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 14 "中文名Dal.tt"
+            #line 15 "中文名Dal.tt"
             this.Write("Dal : DbBase\r\n    {\r\n\t\t#region 定义\r\n\r\n        public ");
             
             #line default
             #line hidden
             
-            #line 18 "中文名Dal.tt"
+            #line 19 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 18 "中文名Dal.tt"
+            #line 19 "中文名Dal.tt"
             this.Write("Dal(IDbConnection dbCon = null) : base(dbCon)\r\n        {\r\n\t\t}\r\n\r\n        #endregi" +
                     "on\r\n\r\n\t\t#region 查询\r\n\r\n        #region 按键及索引 查询\r\n");
             
             #line default
             #line hidden
             
-            #line 27 "中文名Dal.tt"
+            #line 28 "中文名Dal.tt"
 
 foreach(IDataIndex di in Table.Indexes){
 	if(di.Columns==null||di.Columns.Length<1)continue;
@@ -154,13 +154,13 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 53 "中文名Dal.tt"
+            #line 54 "中文名Dal.tt"
             this.Write("\r\n\t\t/// <summary>\r\n        /// 根据主键获取实体\r\n        /// </summary>\r\n\t");
             
             #line default
             #line hidden
             
-            #line 57 "中文名Dal.tt"
+            #line 58 "中文名Dal.tt"
 
 	foreach(IDataColumn Field in keyFields){
 		String colDescr=Field.Description;
@@ -170,123 +170,123 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 61 "中文名Dal.tt"
+            #line 62 "中文名Dal.tt"
             this.Write("\t/// <param name=\"");
             
             #line default
             #line hidden
             
-            #line 61 "中文名Dal.tt"
+            #line 62 "中文名Dal.tt"
             this.Write(FormatUtil.ToParamName(Field.Name));
             
             #line default
             #line hidden
             
-            #line 61 "中文名Dal.tt"
+            #line 62 "中文名Dal.tt"
             this.Write("\">");
             
             #line default
             #line hidden
             
-            #line 61 "中文名Dal.tt"
+            #line 62 "中文名Dal.tt"
             this.Write(colDescr);
             
             #line default
             #line hidden
             
-            #line 61 "中文名Dal.tt"
+            #line 62 "中文名Dal.tt"
             this.Write("</param>\r\n\t");
             
             #line default
             #line hidden
             
-            #line 62 "中文名Dal.tt"
+            #line 63 "中文名Dal.tt"
 }
             
             #line default
             #line hidden
             
-            #line 62 "中文名Dal.tt"
+            #line 63 "中文名Dal.tt"
             this.Write("\t/// <param name=\"tran\">事务</param>\r\n        /// <returns></returns>\r\n        publ" +
                     "ic virtual ");
             
             #line default
             #line hidden
             
-            #line 64 "中文名Dal.tt"
+            #line 65 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 64 "中文名Dal.tt"
+            #line 65 "中文名Dal.tt"
             this.Write(" GetByPk(");
             
             #line default
             #line hidden
             
-            #line 64 "中文名Dal.tt"
+            #line 65 "中文名Dal.tt"
             this.Write(strParas);
             
             #line default
             #line hidden
             
-            #line 64 "中文名Dal.tt"
+            #line 65 "中文名Dal.tt"
             this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = \"SELE" +
                     "CT * FROM {0} WHERE ");
             
             #line default
             #line hidden
             
-            #line 66 "中文名Dal.tt"
+            #line 67 "中文名Dal.tt"
             this.Write(strSqlPara);
             
             #line default
             #line hidden
             
-            #line 66 "中文名Dal.tt"
+            #line 67 "中文名Dal.tt"
             this.Write("\";\r\n\r\n            var sql = string.Format(format, ");
             
             #line default
             #line hidden
             
-            #line 68 "中文名Dal.tt"
+            #line 69 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 68 "中文名Dal.tt"
+            #line 69 "中文名Dal.tt"
             this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.QueryFirst<");
             
             #line default
             #line hidden
             
-            #line 70 "中文名Dal.tt"
+            #line 71 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 70 "中文名Dal.tt"
+            #line 71 "中文名Dal.tt"
             this.Write(">(\r\n                sql: sql,\r\n                param: new {");
             
             #line default
             #line hidden
             
-            #line 72 "中文名Dal.tt"
+            #line 73 "中文名Dal.tt"
             this.Write(strSqlObj);
             
             #line default
             #line hidden
             
-            #line 72 "中文名Dal.tt"
+            #line 73 "中文名Dal.tt"
             this.Write("},\r\n                transaction: tran);\r\n        }\r\n");
             
             #line default
             #line hidden
             
-            #line 75 "中文名Dal.tt"
+            #line 76 "中文名Dal.tt"
 			
 	}else if(di.Unique){
 
@@ -294,13 +294,13 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 77 "中文名Dal.tt"
+            #line 78 "中文名Dal.tt"
             this.Write("\r\n\t\t/// <summary>\r\n        /// 根据唯一索引获取实体\r\n        /// </summary>\r\n\t");
             
             #line default
             #line hidden
             
-            #line 81 "中文名Dal.tt"
+            #line 82 "中文名Dal.tt"
 
 	foreach(IDataColumn Field in keyFields){
 		String colDescr=Field.Description;
@@ -310,135 +310,135 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 85 "中文名Dal.tt"
+            #line 86 "中文名Dal.tt"
             this.Write("\t/// <param name=\"");
             
             #line default
             #line hidden
             
-            #line 85 "中文名Dal.tt"
+            #line 86 "中文名Dal.tt"
             this.Write(FormatUtil.ToParamName(Field.Name));
             
             #line default
             #line hidden
             
-            #line 85 "中文名Dal.tt"
+            #line 86 "中文名Dal.tt"
             this.Write("\">");
             
             #line default
             #line hidden
             
-            #line 85 "中文名Dal.tt"
+            #line 86 "中文名Dal.tt"
             this.Write(colDescr);
             
             #line default
             #line hidden
             
-            #line 85 "中文名Dal.tt"
+            #line 86 "中文名Dal.tt"
             this.Write("</param>\r\n\t");
             
             #line default
             #line hidden
             
-            #line 86 "中文名Dal.tt"
+            #line 87 "中文名Dal.tt"
 }
             
             #line default
             #line hidden
             
-            #line 86 "中文名Dal.tt"
+            #line 87 "中文名Dal.tt"
             this.Write("\t/// <param name=\"tran\">事务</param>\r\n        /// <returns></returns>\r\n        publ" +
                     "ic virtual ");
             
             #line default
             #line hidden
             
-            #line 88 "中文名Dal.tt"
+            #line 89 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 88 "中文名Dal.tt"
+            #line 89 "中文名Dal.tt"
             this.Write(" GetByUk");
             
             #line default
             #line hidden
             
-            #line 88 "中文名Dal.tt"
+            #line 89 "中文名Dal.tt"
             this.Write(idxName);
             
             #line default
             #line hidden
             
-            #line 88 "中文名Dal.tt"
+            #line 89 "中文名Dal.tt"
             this.Write("(");
             
             #line default
             #line hidden
             
-            #line 88 "中文名Dal.tt"
+            #line 89 "中文名Dal.tt"
             this.Write(strParas);
             
             #line default
             #line hidden
             
-            #line 88 "中文名Dal.tt"
+            #line 89 "中文名Dal.tt"
             this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = \"SELE" +
                     "CT * FROM {0} WHERE ");
             
             #line default
             #line hidden
             
-            #line 90 "中文名Dal.tt"
+            #line 91 "中文名Dal.tt"
             this.Write(strSqlPara);
             
             #line default
             #line hidden
             
-            #line 90 "中文名Dal.tt"
+            #line 91 "中文名Dal.tt"
             this.Write("\";\r\n\r\n            var sql = string.Format(format, ");
             
             #line default
             #line hidden
             
-            #line 92 "中文名Dal.tt"
+            #line 93 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 92 "中文名Dal.tt"
+            #line 93 "中文名Dal.tt"
             this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.QueryFirst<");
             
             #line default
             #line hidden
             
-            #line 94 "中文名Dal.tt"
+            #line 95 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 94 "中文名Dal.tt"
+            #line 95 "中文名Dal.tt"
             this.Write(">(\r\n                sql: sql,\r\n                param: new {");
             
             #line default
             #line hidden
             
-            #line 96 "中文名Dal.tt"
+            #line 97 "中文名Dal.tt"
             this.Write(strSqlObj);
             
             #line default
             #line hidden
             
-            #line 96 "中文名Dal.tt"
+            #line 97 "中文名Dal.tt"
             this.Write("},\r\n                transaction: tran);\r\n        }\r\n");
             
             #line default
             #line hidden
             
-            #line 99 "中文名Dal.tt"
+            #line 100 "中文名Dal.tt"
 
 	}else{
 
@@ -446,13 +446,13 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 101 "中文名Dal.tt"
+            #line 102 "中文名Dal.tt"
             this.Write("\r\n\t\t/// <summary>\r\n        /// 根据索引获取实体列表\r\n        /// </summary>\r\n\t");
             
             #line default
             #line hidden
             
-            #line 105 "中文名Dal.tt"
+            #line 106 "中文名Dal.tt"
 
 	foreach(IDataColumn Field in keyFields){
 		String colDescr=Field.Description;
@@ -462,43 +462,43 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 109 "中文名Dal.tt"
+            #line 110 "中文名Dal.tt"
             this.Write("\t/// <param name=\"");
             
             #line default
             #line hidden
             
-            #line 109 "中文名Dal.tt"
+            #line 110 "中文名Dal.tt"
             this.Write(FormatUtil.ToParamName(Field.Name));
             
             #line default
             #line hidden
             
-            #line 109 "中文名Dal.tt"
+            #line 110 "中文名Dal.tt"
             this.Write("\">");
             
             #line default
             #line hidden
             
-            #line 109 "中文名Dal.tt"
+            #line 110 "中文名Dal.tt"
             this.Write(colDescr);
             
             #line default
             #line hidden
             
-            #line 109 "中文名Dal.tt"
+            #line 110 "中文名Dal.tt"
             this.Write("</param>\r\n\t");
             
             #line default
             #line hidden
             
-            #line 110 "中文名Dal.tt"
+            #line 111 "中文名Dal.tt"
 }
             
             #line default
             #line hidden
             
-            #line 110 "中文名Dal.tt"
+            #line 111 "中文名Dal.tt"
             this.Write("\t/// <param name=\"top\">获取行数(默认为0，即所有)</param>\r\n        /// <param name=\"sort\">排序方" +
                     "式(不包含关键字Order By)</param>\r\n\t\t/// <param name=\"tran\">事务</param>\r\n        /// <ret" +
                     "urns></returns>\r\n        public virtual IEnumerable<");
@@ -506,50 +506,50 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 114 "中文名Dal.tt"
+            #line 115 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 114 "中文名Dal.tt"
+            #line 115 "中文名Dal.tt"
             this.Write("> GetByIdx");
             
             #line default
             #line hidden
             
-            #line 114 "中文名Dal.tt"
+            #line 115 "中文名Dal.tt"
             this.Write(idxName);
             
             #line default
             #line hidden
             
-            #line 114 "中文名Dal.tt"
+            #line 115 "中文名Dal.tt"
             this.Write("(");
             
             #line default
             #line hidden
             
-            #line 114 "中文名Dal.tt"
+            #line 115 "中文名Dal.tt"
             this.Write(strParas);
             
             #line default
             #line hidden
             
-            #line 114 "中文名Dal.tt"
+            #line 115 "中文名Dal.tt"
             this.Write(", int top = 0, string sort = null, IDbTransaction tran = null)\r\n        {\r\n      " +
                     "      const string format = \"SELECT * FROM {0} WHERE ");
             
             #line default
             #line hidden
             
-            #line 116 "中文名Dal.tt"
+            #line 117 "中文名Dal.tt"
             this.Write(strSqlPara);
             
             #line default
             #line hidden
             
-            #line 116 "中文名Dal.tt"
+            #line 117 "中文名Dal.tt"
             this.Write(@" {1} {2}"";
 
 			var sortClause = string.Empty;
@@ -570,44 +570,44 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 131 "中文名Dal.tt"
+            #line 132 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 131 "中文名Dal.tt"
+            #line 132 "中文名Dal.tt"
             this.Write("._.DataBaseTableName,\r\n\t\t\t\tsortClause, limitClause);\r\n\r\n            return DbConn" +
                     ".Query<");
             
             #line default
             #line hidden
             
-            #line 134 "中文名Dal.tt"
+            #line 135 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 134 "中文名Dal.tt"
+            #line 135 "中文名Dal.tt"
             this.Write(">(\r\n                sql: sql,\r\n                param: new {");
             
             #line default
             #line hidden
             
-            #line 136 "中文名Dal.tt"
+            #line 137 "中文名Dal.tt"
             this.Write(strSqlObj);
             
             #line default
             #line hidden
             
-            #line 136 "中文名Dal.tt"
+            #line 137 "中文名Dal.tt"
             this.Write("},\r\n                transaction: tran);\r\n        }\r\n");
             
             #line default
             #line hidden
             
-            #line 139 "中文名Dal.tt"
+            #line 140 "中文名Dal.tt"
 
 	}
 }
@@ -616,7 +616,7 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 142 "中文名Dal.tt"
+            #line 143 "中文名Dal.tt"
             this.Write(@"
         #endregion
 
@@ -636,13 +636,13 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 156 "中文名Dal.tt"
+            #line 157 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 156 "中文名Dal.tt"
+            #line 157 "中文名Dal.tt"
             this.Write(@"> GetTopSort(string where, object param = null,
             int top = 0, string sort = null, IDbTransaction tran = null)
         {
@@ -677,26 +677,26 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 185 "中文名Dal.tt"
+            #line 186 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 185 "中文名Dal.tt"
+            #line 186 "中文名Dal.tt"
             this.Write("._.DataBaseTableName,\r\n                whereClause, sortClause, limitClause);\r\n\r\n" +
                     "            return DbConn.Query<");
             
             #line default
             #line hidden
             
-            #line 188 "中文名Dal.tt"
+            #line 189 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 188 "中文名Dal.tt"
+            #line 189 "中文名Dal.tt"
             this.Write(@">(
                 sql: sql,
                 param: param,
@@ -738,13 +738,13 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 224 "中文名Dal.tt"
+            #line 225 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 224 "中文名Dal.tt"
+            #line 225 "中文名Dal.tt"
             this.Write(@"._.DataBaseTableName,
                 whereClause);
 
@@ -774,13 +774,13 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 248 "中文名Dal.tt"
+            #line 249 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 248 "中文名Dal.tt"
+            #line 249 "中文名Dal.tt"
             this.Write(@"> GetPageList(Int64 pageIndex, int pageSize,
             string where = null, object param = null, string sort = null)
         {
@@ -815,33 +815,33 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 277 "中文名Dal.tt"
+            #line 278 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 277 "中文名Dal.tt"
+            #line 278 "中文名Dal.tt"
             this.Write("._.DataBaseTableName,\r\n                whereClause, sortClause, limitClause);\r\n\r\n" +
                     "            return DbConn.Query<");
             
             #line default
             #line hidden
             
-            #line 280 "中文名Dal.tt"
+            #line 281 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 280 "中文名Dal.tt"
+            #line 281 "中文名Dal.tt"
             this.Write(">(\r\n                sql: sql,\r\n                param: param);\r\n        }\r\n\r\n     " +
                     "   #endregion\r\n\r\n        #endregion\r\n");
             
             #line default
             #line hidden
             
-            #line 288 "中文名Dal.tt"
+            #line 289 "中文名Dal.tt"
 
 // sql 列名（a_b,ab_cd）
 String strSqlColumns = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => s.ColumnName));
@@ -859,7 +859,7 @@ IEnumerable<IDataColumn> PrimaryKeyFields = Table.Columns.Where(p => p.PrimaryKe
 String strSqlLastInsertId = IdentityField == null ? string.Empty : "SELECT LAST_INSERT_ID();";
 
 // sql keyvalue语句（columnname=@CodeName,columnname2=@CodeName2)
-String strSqlKvs = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => string.Format("{0}=@{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
+String strSqlColKvs = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => string.Format("{0}=@{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
 
 // sql 主键的keyvalue语句（columnname=@OriginalCodeName,columnname2=@OriginalCodeName2)
 String strSqlKeyKvs = String.Join(" AND ", PrimaryKeyFields.Select(s => string.Format("{0}=@Original{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
@@ -872,7 +872,7 @@ String strKeyParam = String.Join(",", PrimaryKeyFields.Select(s => string.Format
             #line default
             #line hidden
             
-            #line 313 "中文名Dal.tt"
+            #line 314 "中文名Dal.tt"
             this.Write("\r\n\t\t#region Add\r\n\r\n        /// <summary>\r\n        /// 添加\r\n        /// </summary>\r" +
                     "\n        /// <param name=\"item\">实体</param>\r\n        /// <param name=\"tran\">事务</p" +
                     "aram>\r\n        /// <returns></returns>\r\n        public virtual int Add(");
@@ -880,63 +880,63 @@ String strKeyParam = String.Join(",", PrimaryKeyFields.Select(s => string.Format
             #line default
             #line hidden
             
-            #line 322 "中文名Dal.tt"
+            #line 323 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 322 "中文名Dal.tt"
+            #line 323 "中文名Dal.tt"
             this.Write(" item, IDbTransaction tran = null)\r\n        {\r\n            const string format = " +
                     "@\"INSERT INTO {0}(");
             
             #line default
             #line hidden
             
-            #line 324 "中文名Dal.tt"
+            #line 325 "中文名Dal.tt"
             this.Write(strSqlColumns);
             
             #line default
             #line hidden
             
-            #line 324 "中文名Dal.tt"
+            #line 325 "中文名Dal.tt"
             this.Write(") \r\n\t\t\t\tVALUES(");
             
             #line default
             #line hidden
             
-            #line 325 "中文名Dal.tt"
+            #line 326 "中文名Dal.tt"
             this.Write(strSqlParas);
             
             #line default
             #line hidden
             
-            #line 325 "中文名Dal.tt"
+            #line 326 "中文名Dal.tt"
             this.Write(");\r\n\t\t\t\t");
             
             #line default
             #line hidden
             
-            #line 326 "中文名Dal.tt"
+            #line 327 "中文名Dal.tt"
             this.Write(strSqlLastInsertId);
             
             #line default
             #line hidden
             
-            #line 326 "中文名Dal.tt"
+            #line 327 "中文名Dal.tt"
             this.Write("\";\r\n\r\n            var sql = string.Format(format, ");
             
             #line default
             #line hidden
             
-            #line 328 "中文名Dal.tt"
+            #line 329 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 328 "中文名Dal.tt"
-            this.Write("._.DataBaseTableName);\r\n\r\n");
+            #line 329 "中文名Dal.tt"
+            this.Write("._.DataBaseTableName);\r\n");
             
             #line default
             #line hidden
@@ -978,7 +978,18 @@ if(IdentityField != null) {
             #line hidden
             
             #line 332 "中文名Dal.tt"
-
+}else{
+            
+            #line default
+            #line hidden
+            
+            #line 332 "中文名Dal.tt"
+            this.Write("\r\n\t\t\tDbConn.ExecuteScalar(sql, param: item, transaction: tran);\r\n");
+            
+            #line default
+            #line hidden
+            
+            #line 334 "中文名Dal.tt"
 }
 
 foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
@@ -989,44 +1000,44 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 338 "中文名Dal.tt"
+            #line 339 "中文名Dal.tt"
             this.Write("\t\t\titem.Original");
             
             #line default
             #line hidden
             
-            #line 338 "中文名Dal.tt"
+            #line 339 "中文名Dal.tt"
             this.Write(fieldName);
-            
-            #line default
-            #line hidden
-            
-            #line 338 "中文名Dal.tt"
-            this.Write(" = item.");
-            
-            #line default
-            #line hidden
-            
-            #line 338 "中文名Dal.tt"
-            this.Write(fieldName);
-            
-            #line default
-            #line hidden
-            
-            #line 338 "中文名Dal.tt"
-            this.Write(";\r\n");
             
             #line default
             #line hidden
             
             #line 339 "中文名Dal.tt"
+            this.Write(" = item.");
+            
+            #line default
+            #line hidden
+            
+            #line 339 "中文名Dal.tt"
+            this.Write(fieldName);
+            
+            #line default
+            #line hidden
+            
+            #line 339 "中文名Dal.tt"
+            this.Write(";\r\n");
+            
+            #line default
+            #line hidden
+            
+            #line 340 "中文名Dal.tt"
 
 }
             
             #line default
             #line hidden
             
-            #line 340 "中文名Dal.tt"
+            #line 341 "中文名Dal.tt"
             this.Write(@"
             return 1;
         }
@@ -1042,13 +1053,13 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 350 "中文名Dal.tt"
+            #line 351 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 350 "中文名Dal.tt"
+            #line 351 "中文名Dal.tt"
             this.Write(@"> items, IDbTransaction tran = null)
         {
             var count = 0;
@@ -1076,50 +1087,50 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 372 "中文名Dal.tt"
+            #line 373 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 372 "中文名Dal.tt"
+            #line 373 "中文名Dal.tt"
             this.Write(" item, IDbTransaction tran = null)\r\n        {\r\n            const string format = " +
                     "@\"UPDATE {0} \r\n\t\t\t\t\tSET ");
             
             #line default
             #line hidden
             
-            #line 375 "中文名Dal.tt"
-            this.Write(strSqlKvs);
+            #line 376 "中文名Dal.tt"
+            this.Write(strSqlColKvs);
             
             #line default
             #line hidden
             
-            #line 375 "中文名Dal.tt"
+            #line 376 "中文名Dal.tt"
             this.Write(" \r\n\t\t\t\t\tWHERE ");
             
             #line default
             #line hidden
             
-            #line 376 "中文名Dal.tt"
+            #line 377 "中文名Dal.tt"
             this.Write(strSqlKeyKvs);
             
             #line default
             #line hidden
             
-            #line 376 "中文名Dal.tt"
+            #line 377 "中文名Dal.tt"
             this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
             
             #line default
             #line hidden
             
-            #line 378 "中文名Dal.tt"
+            #line 379 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 378 "中文名Dal.tt"
+            #line 379 "中文名Dal.tt"
             this.Write(@"._.DataBaseTableName);
 
             return DbConn.Execute(sql, param: item, transaction: tran);
@@ -1137,13 +1148,13 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 390 "中文名Dal.tt"
+            #line 391 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 390 "中文名Dal.tt"
+            #line 391 "中文名Dal.tt"
             this.Write(" item, IList<string> nameList, IDbTransaction tran = null)\r\n        {\r\n          " +
                     "  if (nameList == null)\r\n            {\r\n                return Update(item, tran" +
                     ");\r\n            }\r\n\r\n            var curFieldList = ");
@@ -1151,13 +1162,13 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 397 "中文名Dal.tt"
+            #line 398 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 397 "中文名Dal.tt"
+            #line 398 "中文名Dal.tt"
             this.Write(@"._.AllFields.Where(f => nameList.Contains(f.Name) && !f.IsReadonly);
             if (!curFieldList.Any())
             {
@@ -1175,13 +1186,13 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 409 "中文名Dal.tt"
+            #line 410 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 409 "中文名Dal.tt"
+            #line 410 "中文名Dal.tt"
             this.Write(@"._.AllFields.Where(p => p.IsPrimaryKey && p.IsReadonly);
             var whereClause = originalKeys.Aggregate(string.Empty,
                 (raw, p) => $""{raw} and {p.ColumnName}=@{p.Name}"",
@@ -1193,13 +1204,13 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 415 "中文名Dal.tt"
+            #line 416 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 415 "中文名Dal.tt"
+            #line 416 "中文名Dal.tt"
             this.Write(@"._.DataBaseTableName,
                 setClause, whereClause);
 
@@ -1217,13 +1228,13 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 427 "中文名Dal.tt"
+            #line 428 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 427 "中文名Dal.tt"
+            #line 428 "中文名Dal.tt"
             this.Write(@"> items, IDbTransaction tran = null)
         {
             var count = 0;
@@ -1249,13 +1260,13 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 447 "中文名Dal.tt"
+            #line 448 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 447 "中文名Dal.tt"
+            #line 448 "中文名Dal.tt"
             this.Write(@" item, string strSet, string strWhere, IDbTransaction tran = null)
         {
             const string format = ""UPDATE {0} SET {1} {2};"";
@@ -1282,329 +1293,334 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line default
             #line hidden
             
-            #line 468 "中文名Dal.tt"
+            #line 469 "中文名Dal.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 468 "中文名Dal.tt"
+            #line 469 "中文名Dal.tt"
             this.Write("._.DataBaseTableName,\r\n                strSet, whereClause);\r\n\r\n            retur" +
                     "n DbConn.Execute(sql, param: item, transaction: tran);\r\n        }\r\n\r\n        #en" +
-                    "dregion\r\n\r\n        #region Remove\r\n");
+                    "dregion\r\n\r\n        #region Remove\r\n\r\n\t\t");
             
             #line default
             #line hidden
             
-            #line 477 "中文名Dal.tt"
+            #line 1 "删除Dal.xt"
+            this.Write("﻿");
+            
+            #line default
+            #line hidden
+            
+            #line 1 "删除Dal.xt"
 
-// 含有主键时，支持主键删除功能
-if(PrimaryKeyFields.Count() > 0)
-{
+//var modelName = FormatUtil.ToCodeName(Table.Name);
 
-            
-            #line default
-            #line hidden
-            
-            #line 481 "中文名Dal.tt"
-            this.Write("\r\n\t    /// <summary>\r\n        /// 按主键删除\r\n        /// </summary>");
-            
-            #line default
-            #line hidden
-            
-            #line 484 "中文名Dal.tt"
+foreach(IDataIndex di in Table.Indexes){
+	if(di.Columns == null || di.Columns.Length < 1) continue;
 
-	foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
-	{
-		String colDescr = FormatUtil.ToSigleDisplay(Field.Description);
-            
-            #line default
-            #line hidden
-            
-            #line 487 "中文名Dal.tt"
-            this.Write("\r\n\t\t/// <param name=\"");
-            
-            #line default
-            #line hidden
-            
-            #line 488 "中文名Dal.tt"
-            this.Write(FormatUtil.ToParamName(Field.Name));
-            
-            #line default
-            #line hidden
-            
-            #line 488 "中文名Dal.tt"
-            this.Write("\">");
-            
-            #line default
-            #line hidden
-            
-            #line 488 "中文名Dal.tt"
-            this.Write(colDescr);
-            
-            #line default
-            #line hidden
-            
-            #line 488 "中文名Dal.tt"
-            this.Write("</param>\r\n\t");
-            
-            #line default
-            #line hidden
-            
-            #line 489 "中文名Dal.tt"
-}
-            
-            #line default
-            #line hidden
-            
-            #line 489 "中文名Dal.tt"
-            this.Write("/// <param name=\"tran\">事务</param>\r\n        /// <returns></returns>\r\n        publi" +
-                    "c virtual int RemoveByPk(");
-            
-            #line default
-            #line hidden
-            
-            #line 491 "中文名Dal.tt"
-            this.Write(strKeyParam);
-            
-            #line default
-            #line hidden
-            
-            #line 491 "中文名Dal.tt"
-            this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = @\"DEL" +
-                    "ETE FROM {0} WHERE ");
-            
-            #line default
-            #line hidden
-            
-            #line 493 "中文名Dal.tt"
-            this.Write(strSqlKeyKvs);
-            
-            #line default
-            #line hidden
-            
-            #line 493 "中文名Dal.tt"
-            this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
-            
-            #line default
-            #line hidden
-            
-            #line 495 "中文名Dal.tt"
-            this.Write(modelName);
-            
-            #line default
-            #line hidden
-            
-            #line 495 "中文名Dal.tt"
-            this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: new {");
-            
-            #line default
-            #line hidden
-            
-            #line 497 "中文名Dal.tt"
-            this.Write(strSqlKeyObj);
-            
-            #line default
-            #line hidden
-            
-            #line 497 "中文名Dal.tt"
-            this.Write("}, transaction: tran);\r\n        }\r\n\t");
-            
-            #line default
-            #line hidden
-            
-            #line 499 "中文名Dal.tt"
+	var idxName = FormatUtil.ToCodeName(di.Name);
+	var keyFields = Table.Columns.Where(p => di.Columns.Contains(p.Name));
 
-	// 主键 只有一列时，支持批量删除功能
-	if(PrimaryKeyFields.Count() == 1)
-	{
-		String keyParam = FormatUtil.ToParamName(PrimaryKeyFields.First().Name) + "s";
+	// 函数参数列表（int id,string codeName）
+	var strParas = String.Join(", ", keyFields.Select(p => string.Format("{0} {1}", FormatUtil.ToFieldTypeString(p), FormatUtil.ToParamName(p.Name))));
+
+	// sql语句中参数 keyvalue语句（columnname=@CodeName AND columnname2=@CodeName2)
+	var strSqlKvs = String.Join(" AND ", keyFields.Select(p => string.Format("{0}=@Original{1}", p.ColumnName, FormatUtil.ToCodeName(p.Name))));
+
+	// sql对象
+	var strSqlObj = String.Join(", ", keyFields.Select(p => string.Format("Original{0} = {1}", FormatUtil.ToCodeName(p.Name), FormatUtil.ToParamName(p.Name))));
+
+	// 删除依据
+	var strCondition = di.Name.ToLower() == "primary" ? "主键" : "索引";
+	var strConditionName = di.Name.ToLower() == "primary" ? "Pk" : "Idx" + idxName;
+	
 	
             
             #line default
             #line hidden
             
-            #line 504 "中文名Dal.tt"
-            this.Write("\r\n\t\t/// <summary>\r\n        /// 按主键批量删除\r\n        /// </summary>\r\n        /// <para" +
-                    "m name=\"");
+            #line 23 "删除Dal.xt"
+            this.Write("\r\n\t\t#region 按键及索引 删除\r\n\r\n\t\t/// <summary>\r\n        /// 根据");
             
             #line default
             #line hidden
             
-            #line 508 "中文名Dal.tt"
-            this.Write(keyParam);
+            #line 27 "删除Dal.xt"
+            this.Write(strCondition);
             
             #line default
             #line hidden
             
-            #line 508 "中文名Dal.tt"
+            #line 27 "删除Dal.xt"
+            this.Write("删除\r\n        /// </summary>\r\n\t");
+            
+            #line default
+            #line hidden
+            
+            #line 29 "删除Dal.xt"
+
+	foreach(IDataColumn Field in keyFields){
+            
+            #line default
+            #line hidden
+            
+            #line 30 "删除Dal.xt"
+            this.Write("\t\r\n\t\t/// <param name=\"");
+            
+            #line default
+            #line hidden
+            
+            #line 31 "删除Dal.xt"
+            this.Write(FormatUtil.ToParamName(Field.Name));
+            
+            #line default
+            #line hidden
+            
+            #line 31 "删除Dal.xt"
             this.Write("\">");
             
             #line default
             #line hidden
             
-            #line 508 "中文名Dal.tt"
-            this.Write(FormatUtil.ToSigleDisplay(PrimaryKeyFields.First().Description));
+            #line 31 "删除Dal.xt"
+            this.Write(FormatUtil.ToSigleDisplay(Field.Description));
             
             #line default
             #line hidden
             
-            #line 508 "中文名Dal.tt"
-            this.Write("列表</param>\r\n        /// <param name=\"tran\">事务</param>\r\n        /// <returns></ret" +
-                    "urns>\r\n        public virtual int RemoveByPks(IEnumerable<");
+            #line 31 "删除Dal.xt"
+            this.Write("</param>");
             
             #line default
             #line hidden
             
-            #line 511 "中文名Dal.tt"
-            this.Write(FormatUtil.ToFieldTypeString(PrimaryKeyFields.First()));
+            #line 31 "删除Dal.xt"
+}
             
             #line default
             #line hidden
             
-            #line 511 "中文名Dal.tt"
-            this.Write("> ");
+            #line 31 "删除Dal.xt"
+            this.Write("\r\n\t\t/// <param name=\"tran\">事务</param>\r\n        /// <returns></returns>\r\n\t\tpublic " +
+                    "virtual int RemoveBy");
             
             #line default
             #line hidden
             
-            #line 511 "中文名Dal.tt"
-            this.Write(keyParam);
+            #line 34 "删除Dal.xt"
+            this.Write(strConditionName);
             
             #line default
             #line hidden
             
-            #line 511 "中文名Dal.tt"
+            #line 34 "删除Dal.xt"
+            this.Write("(");
+            
+            #line default
+            #line hidden
+            
+            #line 34 "删除Dal.xt"
+            this.Write(strParas);
+            
+            #line default
+            #line hidden
+            
+            #line 34 "删除Dal.xt"
             this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = @\"DEL" +
                     "ETE FROM {0} WHERE ");
             
             #line default
             #line hidden
             
-            #line 513 "中文名Dal.tt"
-            this.Write(strSqlKeyKvs);
+            #line 36 "删除Dal.xt"
+            this.Write(strSqlKvs);
             
             #line default
             #line hidden
             
-            #line 513 "中文名Dal.tt"
+            #line 36 "删除Dal.xt"
             this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
             
             #line default
             #line hidden
             
-            #line 515 "中文名Dal.tt"
+            #line 38 "删除Dal.xt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 515 "中文名Dal.tt"
-            this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: ");
+            #line 38 "删除Dal.xt"
+            this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: new {");
             
             #line default
             #line hidden
             
-            #line 517 "中文名Dal.tt"
+            #line 40 "删除Dal.xt"
+            this.Write(strSqlObj);
+            
+            #line default
+            #line hidden
+            
+            #line 40 "删除Dal.xt"
+            this.Write("}, transaction: tran);\r\n        }\r\n\t\r\n\t");
+            
+            #line default
+            #line hidden
+            
+            #line 43 "删除Dal.xt"
+
+	// 只有一列时，支持批量删除功能
+	if(keyFields.Count() == 1)
+	{
+		String keyParam = FormatUtil.ToParamName(keyFields.First().Name) + "s";
+            
+            #line default
+            #line hidden
+            
+            #line 47 "删除Dal.xt"
+            this.Write("\r\n\t\t/// <summary>\r\n        /// 根据");
+            
+            #line default
+            #line hidden
+            
+            #line 49 "删除Dal.xt"
+            this.Write(strCondition);
+            
+            #line default
+            #line hidden
+            
+            #line 49 "删除Dal.xt"
+            this.Write("批量删除\r\n        /// </summary>\r\n        /// <param name=\"");
+            
+            #line default
+            #line hidden
+            
+            #line 51 "删除Dal.xt"
             this.Write(keyParam);
             
             #line default
             #line hidden
             
-            #line 517 "中文名Dal.tt"
-            this.Write(".Select(p => new {Original");
+            #line 51 "删除Dal.xt"
+            this.Write("\">");
             
             #line default
             #line hidden
             
-            #line 517 "中文名Dal.tt"
-            this.Write(FormatUtil.ToCodeName(PrimaryKeyFields.First().Name));
+            #line 51 "删除Dal.xt"
+            this.Write(FormatUtil.ToSigleDisplay(keyFields.First().Description));
             
             #line default
             #line hidden
             
-            #line 517 "中文名Dal.tt"
-            this.Write(" = p}), transaction: tran);\r\n        }\r\n\t");
+            #line 51 "删除Dal.xt"
+            this.Write("列表</param>\r\n        /// <param name=\"tran\">事务</param>\r\n        /// <returns></ret" +
+                    "urns>\r\n        public virtual int RemoveBy");
             
             #line default
             #line hidden
             
-            #line 519 "中文名Dal.tt"
-}
-}
-
+            #line 54 "删除Dal.xt"
+            this.Write(strConditionName);
             
             #line default
             #line hidden
             
-            #line 521 "中文名Dal.tt"
-            this.Write("\r\n\r\n");
+            #line 54 "删除Dal.xt"
+            this.Write("s(IEnumerable<");
             
             #line default
             #line hidden
             
-            #line 523 "中文名Dal.tt"
-
-// 按照索引 删除
-foreach(IDataIndex di in Table.Indexes)
-{
-	if(di.Columns==null||di.Columns.Length<1)continue;
-
-
-
-}
-
+            #line 54 "删除Dal.xt"
+            this.Write(FormatUtil.ToFieldTypeString(keyFields.First()));
             
             #line default
             #line hidden
             
-            #line 532 "中文名Dal.tt"
-            this.Write(@"        
-
-
-        /// <summary>
-        /// 根据索引删除 idx_ip(ip)
-        /// </summary>
-        /// <param name=""ip""></param>
-        /// <param name=""tran""></param>
-        /// <returns></returns>
-        public virtual int RemoveByIp(string ip, IDbTransaction tran = null)
-        {
-            const string format = @""DELETE FROM {0} WHERE ip=@Ip;"";
-
-            var sql = string.Format(format, TbIpBlackList.__.DataBaseTableName);
-
-            return DbConn.Execute(sql, param: new {Ip = ip}, transaction: tran);
-        }
-
-        /// <summary>
-        /// 根据索引批量删除 idex_ip(ip)
-        /// </summary>
-        /// <param name=""ips""></param>
-        /// <param name=""tran""></param>
-        /// <returns></returns>
-        public virtual int RemoveByIps(IEnumerable<string> ips, IDbTransaction tran = null)
-        {
-            const string format = @""DELETE FROM {0} WHERE ip=@Ip;"";
-
-            var sql = string.Format(format, ");
+            #line 54 "删除Dal.xt"
+            this.Write("> ");
             
             #line default
             #line hidden
             
-            #line 560 "中文名Dal.tt"
+            #line 54 "删除Dal.xt"
+            this.Write(keyParam);
+            
+            #line default
+            #line hidden
+            
+            #line 54 "删除Dal.xt"
+            this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = @\"DEL" +
+                    "ETE FROM {0} WHERE ");
+            
+            #line default
+            #line hidden
+            
+            #line 56 "删除Dal.xt"
+            this.Write(strSqlKvs);
+            
+            #line default
+            #line hidden
+            
+            #line 56 "删除Dal.xt"
+            this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
+            
+            #line default
+            #line hidden
+            
+            #line 58 "删除Dal.xt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 560 "中文名Dal.tt"
-            this.Write(@"._.DataBaseTableName);
+            #line 58 "删除Dal.xt"
+            this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: ");
+            
+            #line default
+            #line hidden
+            
+            #line 60 "删除Dal.xt"
+            this.Write(keyParam);
+            
+            #line default
+            #line hidden
+            
+            #line 60 "删除Dal.xt"
+            this.Write(".Select(p => new {Original");
+            
+            #line default
+            #line hidden
+            
+            #line 60 "删除Dal.xt"
+            this.Write(FormatUtil.ToCodeName(keyFields.First().Name));
+            
+            #line default
+            #line hidden
+            
+            #line 60 "删除Dal.xt"
+            this.Write(" = p}), transaction: tran);\r\n        }\r\n\t");
+            
+            #line default
+            #line hidden
+            
+            #line 62 "删除Dal.xt"
+}
+}
 
-            return DbConn.Execute(sql, param: ips.Select(p => new {Ip = p}), transaction: tran);
-        }
+            
+            #line default
+            #line hidden
+            
+            #line 64 "删除Dal.xt"
+            this.Write(@"
+		#endregion
 
-        /// <summary>
+		/// <summary>
         /// 自定义条件删除
         /// </summary>
         /// <param name=""where"">自定义条件，where子句（不包含关键字Where）</param>
@@ -1632,16 +1648,21 @@ foreach(IDataIndex di in Table.Indexes)
             #line default
             #line hidden
             
-            #line 588 "中文名Dal.tt"
+            #line 90 "删除Dal.xt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 588 "中文名Dal.tt"
+            #line 90 "删除Dal.xt"
             this.Write("._.DataBaseTableName,\r\n                whereClause);\r\n\r\n            return DbConn" +
-                    ".Execute(sql, param: param, transaction: tran);\r\n        }\r\n\r\n        #endregion" +
-                    "\r\n    }\r\n}");
+                    ".Execute(sql, param: param, transaction: tran);\r\n        }");
+            
+            #line default
+            #line hidden
+            
+            #line 479 "中文名Dal.tt"
+            this.Write("\r\n\r\n        #endregion\r\n    }\r\n}");
             
             #line default
             #line hidden

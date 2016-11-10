@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using App.FrameCore;
 using Dapper;
 
@@ -302,7 +303,7 @@ IEnumerable<IDataColumn> PrimaryKeyFields = Table.Columns.Where(p => p.PrimaryKe
 String strSqlLastInsertId = IdentityField == null ? string.Empty : "SELECT LAST_INSERT_ID();";
 
 // sql keyvalue语句（columnname=@CodeName,columnname2=@CodeName2)
-String strSqlKvs = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => string.Format("{0}=@{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
+String strSqlColKvs = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => string.Format("{0}=@{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
 
 // sql 主键的keyvalue语句（columnname=@OriginalCodeName,columnname2=@OriginalCodeName2)
 String strSqlKeyKvs = String.Join(" AND ", PrimaryKeyFields.Select(s => string.Format("{0}=@Original{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
@@ -326,11 +327,11 @@ String strKeyParam = String.Join(",", PrimaryKeyFields.Select(s => string.Format
 				<#=strSqlLastInsertId#>";
 
             var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
-
 <#if(IdentityField != null) {#>
 			item.<#=FormatUtil.ToCodeName(IdentityField.Name)#> = DbConn.ExecuteScalar<<#=IdentityField.DataType.Name#>>(sql, param: item, transaction: tran);
-<#
-}
+<#}else{#>
+			DbConn.ExecuteScalar(sql, param: item, transaction: tran);
+<#}
 
 foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
 {
@@ -372,7 +373,7 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
         public virtual int Update(<#=modelName#> item, IDbTransaction tran = null)
         {
             const string format = @"UPDATE {0} 
-					SET <#=strSqlKvs#> 
+					SET <#=strSqlColKvs#> 
 					WHERE <#=strSqlKeyKvs#>;";
 
             var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
@@ -474,122 +475,8 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
         #endregion
 
         #region Remove
-<#
-// 含有主键时，支持主键删除功能
-if(PrimaryKeyFields.Count() > 0)
-{
-#>
-	    /// <summary>
-        /// 按主键删除
-        /// </summary><#
-	foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
-	{
-		String colDescr = FormatUtil.ToSigleDisplay(Field.Description);#>
-		/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
-	<#}#>/// <param name="tran">事务</param>
-        /// <returns></returns>
-        public virtual int RemoveByPk(<#=strKeyParam#>, IDbTransaction tran = null)
-        {
-            const string format = @"DELETE FROM {0} WHERE <#=strSqlKeyKvs#>;";
 
-            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
-
-            return DbConn.Execute(sql, param: new {<#=strSqlKeyObj#>}, transaction: tran);
-        }
-	<#
-	// 主键 只有一列时，支持批量删除功能
-	if(PrimaryKeyFields.Count() == 1)
-	{
-		String keyParam = FormatUtil.ToParamName(PrimaryKeyFields.First().Name) + "s";
-	#>
-		/// <summary>
-        /// 按主键批量删除
-        /// </summary>
-        /// <param name="<#=keyParam#>"><#=FormatUtil.ToSigleDisplay(PrimaryKeyFields.First().Description)#>列表</param>
-        /// <param name="tran">事务</param>
-        /// <returns></returns>
-        public virtual int RemoveByPks(IEnumerable<<#=FormatUtil.ToFieldTypeString(PrimaryKeyFields.First())#>> <#=keyParam#>, IDbTransaction tran = null)
-        {
-            const string format = @"DELETE FROM {0} WHERE <#=strSqlKeyKvs#>;";
-
-            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
-
-            return DbConn.Execute(sql, param: <#=keyParam#>.Select(p => new {Original<#=FormatUtil.ToCodeName(PrimaryKeyFields.First().Name)#> = p}), transaction: tran);
-        }
-	<#}
-}
-#>
-
-<#
-// 按照索引 删除
-foreach(IDataIndex di in Table.Indexes)
-{
-	if(di.Columns==null||di.Columns.Length<1)continue;
-
-
-
-}
-#>        
-
-
-        /// <summary>
-        /// 根据索引删除 idx_ip(ip)
-        /// </summary>
-        /// <param name="ip"></param>
-        /// <param name="tran"></param>
-        /// <returns></returns>
-        public virtual int RemoveByIp(string ip, IDbTransaction tran = null)
-        {
-            const string format = @"DELETE FROM {0} WHERE ip=@Ip;";
-
-            var sql = string.Format(format, TbIpBlackList.__.DataBaseTableName);
-
-            return DbConn.Execute(sql, param: new {Ip = ip}, transaction: tran);
-        }
-
-        /// <summary>
-        /// 根据索引批量删除 idex_ip(ip)
-        /// </summary>
-        /// <param name="ips"></param>
-        /// <param name="tran"></param>
-        /// <returns></returns>
-        public virtual int RemoveByIps(IEnumerable<string> ips, IDbTransaction tran = null)
-        {
-            const string format = @"DELETE FROM {0} WHERE ip=@Ip;";
-
-            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
-
-            return DbConn.Execute(sql, param: ips.Select(p => new {Ip = p}), transaction: tran);
-        }
-
-        /// <summary>
-        /// 自定义条件删除
-        /// </summary>
-        /// <param name="where">自定义条件，where子句（不包含关键字Where）</param>
-        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
-        /// <param name="tran">事务</param>
-        /// <returns></returns>
-        public virtual int Remove(string where, object param = null, IDbTransaction tran = null)
-        {
-            const string format = @"DELETE FROM {0} {1};";
-
-            var whereClause = string.Empty;
-            if (!string.IsNullOrWhiteSpace(where))
-            {
-                whereClause = where.Trim();
-
-                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
-                {
-                    whereClause = "WHERE " + whereClause;
-                }
-            }
-
-            var sql = string.Format(format,
-                <#=modelName#>._.DataBaseTableName,
-                whereClause);
-
-            return DbConn.Execute(sql, param: param, transaction: tran);
-        }
+		<#@include Name="删除Dal.xt"#>
 
         #endregion
     }

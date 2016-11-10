@@ -1,0 +1,93 @@
+﻿	#region 按键及索引 删除
+<#
+//var modelName = FormatUtil.ToCodeName(Table.Name);
+
+foreach(IDataIndex di in Table.Indexes){
+	if(di.Columns == null || di.Columns.Length < 1) continue;
+
+	var idxName = FormatUtil.ToCodeName(di.Name);
+	var keyFields = Table.Columns.Where(p => di.Columns.Contains(p.Name));
+
+	// 函数参数列表（int id,string codeName）
+	var strParas = String.Join(", ", keyFields.Select(p => string.Format("{0} {1}", FormatUtil.ToFieldTypeString(p), FormatUtil.ToParamName(p.Name))));
+
+	// sql语句中参数 keyvalue语句（columnname=@CodeName AND columnname2=@CodeName2)
+	var strSqlKvs = String.Join(" AND ", keyFields.Select(p => string.Format("{0}=@Original{1}", p.ColumnName, FormatUtil.ToCodeName(p.Name))));
+
+	// sql对象
+	var strSqlObj = String.Join(", ", keyFields.Select(p => string.Format("Original{0} = {1}", FormatUtil.ToCodeName(p.Name), FormatUtil.ToParamName(p.Name))));
+
+	// 删除依据
+	var strCondition = di.Name.ToLower() == "primary" ? "主键" : "索引";
+	var strConditionName = di.Name.ToLower() == "primary" ? "Pk" : "Idx" + idxName;
+	
+	#>
+		/// <summary>
+        /// 根据<#=strCondition#>删除
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){#>	
+		/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=FormatUtil.ToSigleDisplay(Field.Description)#></param><#}#>
+		/// <param name="tran">事务</param>
+        /// <returns></returns>
+		public virtual int RemoveBy<#=strConditionName#>(<#=strParas#>, IDbTransaction tran = null)
+        {
+            const string format = @"DELETE FROM {0} WHERE <#=strSqlKvs#>;";
+
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+
+            return DbConn.Execute(sql, param: new {<#=strSqlObj#>}, transaction: tran);
+        }
+	
+	<#
+	// 只有一列时，支持批量删除功能
+	if(keyFields.Count() == 1)
+	{
+		String keyParam = FormatUtil.ToParamName(keyFields.First().Name) + "s";#>
+		/// <summary>
+        /// 根据<#=strCondition#>批量删除
+        /// </summary>
+        /// <param name="<#=keyParam#>"><#=FormatUtil.ToSigleDisplay(keyFields.First().Description)#>列表</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int RemoveBy<#=strConditionName#>s(IEnumerable<<#=FormatUtil.ToFieldTypeString(keyFields.First())#>> <#=keyParam#>, IDbTransaction tran = null)
+        {
+            const string format = @"DELETE FROM {0} WHERE <#=strSqlKvs#>;";
+
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+
+            return DbConn.Execute(sql, param: <#=keyParam#>.Select(p => new {Original<#=FormatUtil.ToCodeName(keyFields.First().Name)#> = p}), transaction: tran);
+        }
+	<#}
+}
+#>
+		#endregion
+
+		/// <summary>
+        /// 自定义条件删除
+        /// </summary>
+        /// <param name="where">自定义条件，where子句（不包含关键字Where）</param>
+        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int Remove(string where, object param = null, IDbTransaction tran = null)
+        {
+            const string format = @"DELETE FROM {0} {1};";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sql = string.Format(format,
+                <#=modelName#>._.DataBaseTableName,
+                whereClause);
+
+            return DbConn.Execute(sql, param: param, transaction: tran);
+        }
