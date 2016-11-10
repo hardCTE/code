@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace XCoder.TemplateHelper
+namespace TemplateHelper
 {
     /// <summary>
     /// 字符串扩展
@@ -30,7 +30,7 @@ namespace XCoder.TemplateHelper
         /// </summary>
         /// <param name="value">字符串</param>
         /// <returns>字符串</returns>
-        private static string Clean(this string value)
+        public static string Clean(this string value)
         {
             var query = from str in value.Split(_cleanChars, StringSplitOptions.RemoveEmptyEntries)
                         let item = str.ConvertPascalCase().Trim()

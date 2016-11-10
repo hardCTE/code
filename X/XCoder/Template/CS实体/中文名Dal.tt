@@ -10,12 +10,13 @@ namespace <#=Config.NameSpace#>
     String tdes=Table.Description;
     if(!String.IsNullOrEmpty(tdes)) tdes=tdes.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
     if(String.IsNullOrEmpty(tdis)) tdis=tdes;
+	var modelName = TemplateHelper.FormatUtil.ToCodeName(Table.Name);
     #>
-    public partial class <#=Table.Name#>Dal : DbBase
+    public partial class <#=modelName#>Dal : DbBase
     {
 		#region 定义
 
-        public <#=Table.Name#>Dal(IDbConnection dbCon = null) : base(dbCon)
+        public <#=modelName#>Dal(IDbConnection dbCon = null) : base(dbCon)
         {
 		}
 
@@ -32,7 +33,11 @@ foreach(IDataIndex di in Table.Indexes){
 
 	if(di.Name.ToLower() == "primary"){
 		var keyFields = Table.Columns.Where(p => di.Columns.Contain(p));
-		keyFields.Select(p => p.DataType == null ? "" : 
+
+		var fieldType = ;
+		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+		keyFields.Select(p => string.format("{0} {1}",TemplateHelper.FormatUtil.ToFieldTypeString(p),TemplateHelper.FormatUtil.ToCodeName(p.Name));
 		var strColPara = String.Join(",",
 	#>
 		/// <summary>

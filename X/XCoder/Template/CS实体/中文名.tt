@@ -10,6 +10,8 @@ namespace <#=Config.NameSpace#>
     String tdes=Table.Description;
     if(!String.IsNullOrEmpty(tdes)) tdes=tdes.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
     if(String.IsNullOrEmpty(tdis)) tdis=tdes;
+
+	var modelName = TemplateHelper.FormatUtil.ToCodeName(Table.Name);
     #>
     /// <summary><#=tdis#></summary><# if(tdis!=tdes){#>
 	/// <remarks><#=tdes#></remarks><#}#>
@@ -20,7 +22,7 @@ foreach(IDataIndex di in Table.Indexes){if(di.Columns==null||di.Columns.Length<1
 foreach(IDataRelation dr in Table.Relations){#>
     ///[BindRelation("<#=dr.Column#>", <#=dr.Unique.ToString().ToLower()#>, "<#=dr.RelationTable#>", "<#=dr.RelationColumn#>")]<#}#>
     ///[BindTable("<#=Table.TableName#>", Description = "<#=tdes#>", ConnName = "<#=Table.ConnName ?? Config.EntityConnName#>", DbType = DatabaseType.<#=Table.DbType#><#if(Table.IsView){#>, IsView = true<#}#>)]
-    public partial class <#=Table.Name#> : TableModelBase
+    public partial class <#=modelName#> : TableModelBase
     {<#
 if(Table.Columns.Count>0)
 {
@@ -33,10 +35,11 @@ if(Table.Columns.Count>0)
         String dis = Field.DisplayName;
         if(!String.IsNullOrEmpty(dis)) dis=dis.Replace("\r\n"," ").Replace("'", " ").Replace("\"", "");
 
-		var fieldType = XCoder.TemplateHelper.FormatUtil.GetFieldTypeString(Field);
+		var fieldType = TemplateHelper.FormatUtil.ToFieldTypeString(Field);
+		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
 #>
         /// <summary><#=des#></summary>
-		public virtual <#=fieldType#> <#=Field.Name#> { get; set; }
+		public virtual <#=fieldType#> <#=fieldName#> { get; set; }
 <#
     }
 #>        #endregion
@@ -46,7 +49,7 @@ if(Table.Columns.Count>0)
 		/// <summary>
         /// 数据库表名
         /// </summary>
-        public override string DataBaseTableName => __.DataBaseTableName;
+        public override string DataBaseTableName => _.DataBaseTableName;
 
         /// <summary>
         /// 获取模型所有字段
@@ -72,8 +75,9 @@ if(Table.Columns.Count>0)
                 {<#
     foreach(IDataColumn Field in Table.Columns)
     {
+		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
 #>
-                    case __.<#=Field.Name#> : return <#=Field.Name#>;<#
+                    case __.<#=fieldName#> : return <#=fieldName#>;<#
     }
 #>
                     default: return null;
@@ -85,13 +89,15 @@ if(Table.Columns.Count>0)
                 {<#
     Type conv=typeof(Convert);
     foreach(IDataColumn Field in Table.Columns)
-    { 
+    {
+		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
         if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
 #>
-                    case __.<#=Field.Name#> : <#=Field.Name#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
+                    case __.<#=fieldName#> : <#=fieldName#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
         }else{
 #>
-                    case __.<#=Field.Name#> : <#=Field.Name#> = (<#=Field.DataType.Name#>)value; break;<#
+                    case __.<#=fieldName#> : <#=fieldName#> = (<#=Field.DataType.Name#>)value; break;<#
         }
     }
 #>
@@ -108,22 +114,20 @@ if(Table.Columns.Count>0)
 		/// <summary>取得<#=tdis#>字段名称的快捷方式</summary>
         public partial class __
         {
-			/// <summary>
-            /// 数据库表名
-            /// </summary>
-            public const string DataBaseTableName = "<#=Table.TableName#>";
 <#
 foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 {
+	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
     String des=Field.Description;
     if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
 	if(Field.PrimaryKey){
 #>
 			///<summary>原始主键，<#=des#></summary>
-            public const String Original<#=Field.Name#> = "<#=Field.Name#>";
+            public const String Original<#=fieldName#> = "<#=fieldName#>";
 <#}#>
             ///<summary><#=des#></summary>
-            public const String <#=Field.Name#> = "<#=Field.Name#>";
+            public const String <#=fieldName#> = "<#=fieldName#>";
 <#
 }
 #>
@@ -131,18 +135,24 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 
         /// <summary>取得<#=tdis#>字段信息的快捷方式</summary>
         public partial class _
-        {<#
+        {
+			/// <summary>
+            /// 数据库表名
+            /// </summary>
+            public const string DataBaseTableName = "<#=Table.TableName#>";
+<#
 foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 {
+	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
     String des=Field.Description;
     if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
 
 	if(Field.PrimaryKey){
 #>
             ///<summary>原始主键,<#=des#></summary>
-            public static readonly Field Original<#=Field.Name#> = new Field
+            public static readonly Field Original<#=fieldName#> = new Field
             {
-                Name = __.Original<#=Field.Name#>,
+                Name = __.Original<#=fieldName#>,
 				ColumnName = "<#=Field.Name#>",
                 DisplayName = "<#=Field.DisplayName#>",
                 Description = "<#=(""+Field.Description).Replace("\\", "\\\\")#>",
@@ -158,9 +168,9 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 			};
 <#}#>
             ///<summary><#=des#></summary>
-            public static readonly Field <#=Field.Name#> = new Field
+            public static readonly Field <#=fieldName#> = new Field
             {
-                Name = __.<#=Field.Name#>,
+                Name = __.<#=fieldName#>,
 				ColumnName = "<#=Field.Name#>",
                 DisplayName = "<#=Field.DisplayName#>",
                 Description = "<#=(""+Field.Description).Replace("\\", "\\\\")#>",
@@ -182,9 +192,10 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
             {<#
 foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 {
+	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
 	if(Field.PrimaryKey){#>
-				Original<#=Field.Name#>,<#}#>			
-				<#=Field.Name#>,<#
+				Original<#=fieldName#>,<#}#>			
+				<#=fieldName#>,<#
 }
 #>
             };
