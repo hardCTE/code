@@ -476,7 +476,7 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
 
 		#region Remove
 
-		<#@include Name="内嵌_删除.tt"#>
+		<#@include Name="Include_删除.tt"#>
 
         #endregion
     }

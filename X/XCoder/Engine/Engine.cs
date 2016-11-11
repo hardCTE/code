@@ -181,8 +181,12 @@ namespace XCoder
 
                     // 添加文件头
                     // supply .tt suffix. xdb:2016-11-11 16:40:59
-                    if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && (key.EndsWithIgnoreCase(".cs") || key.EndsWithIgnoreCase(".tt")))
+                    if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) &&
+                        !key.StartsWithIgnoreCase(name + ".include_") &&
+                        (key.EndsWithIgnoreCase(".cs") || key.EndsWithIgnoreCase(".tt")))
+                    {
                         content = Config.HeadTemplate + content;
+                    }
 
                     templates.Add(key.Substring(name.Length + 1), content);
                     encs.Add(Encoding.UTF8);
@@ -210,7 +214,7 @@ namespace XCoder
 
                         // 添加文件头
                         // supply .tt suffix. xdb:2016-11-11 16:40:59
-                        if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && (name.EndsWithIgnoreCase(".cs") || name.EndsWithIgnoreCase(".tt")))
+                        if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && !name.StartsWithIgnoreCase("include_") && (name.EndsWithIgnoreCase(".cs") || name.EndsWithIgnoreCase(".tt")))
                             content = Config.HeadTemplate + content;
 
                         templates.Add(name, content);
