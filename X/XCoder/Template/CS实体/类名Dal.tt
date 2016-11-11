@@ -112,7 +112,7 @@ foreach(IDataIndex di in Table.Indexes){
         /// <param name="sort">排序方式(不包含关键字Order By)</param>
 		/// <param name="tran">事务</param>
         /// <returns></returns>
-        public virtual IEnumerable<<#=modelName#>> GetByIdx<#=idxName#>(<#=strParas#>, int top = 0, string sort = null, IDbTransaction tran = null)
+        public virtual IEnumerable<<#=modelName#>> GetBy<#=idxName#>(<#=strParas#>, int top = 0, string sort = null, IDbTransaction tran = null)
         {
             const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#> {1} {2}";
 

@@ -20,7 +20,7 @@ foreach(IDataIndex di in Table.Indexes){
 
 	// 删除依据
 	var strCondition = di.Name.ToLower() == "primary" ? "主键" : "索引";
-	var strConditionName = di.Name.ToLower() == "primary" ? "Pk" : "Idx" + idxName;
+	var strConditionName = di.Name.ToLower() == "primary" ? "Pk" : idxName;
 	
 	#>
 		/// <summary>
