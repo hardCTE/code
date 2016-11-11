@@ -155,7 +155,7 @@
     <EmbeddedResource Include="NewModelForm\NewModel.resx">
       <DependentUpon>NewModel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Template\CS实体\中文名Dal.tt" />
+    <EmbeddedResource Include="Template\CS实体\类名Dal.tt" />
     <EmbeddedResource Include="Template\页面ExtAspNet\类名.aspx.cs">
       <DependentUpon>类名.aspx</DependentUpon>
     </EmbeddedResource>
@@ -348,7 +348,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Template\CS实体\中文名.tt" />
+    <EmbeddedResource Include="Template\CS实体\类名.tt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

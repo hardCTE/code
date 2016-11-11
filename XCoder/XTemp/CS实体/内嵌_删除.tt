@@ -1,3 +1,9 @@
+/*
+ * XCoder v<#=Version#>
+ * 作者：<#=Environment.UserName + "/" + Environment.MachineName#>
+ * 时间：<#=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")#>
+ * 版权：hardCTE 2016~<#=DateTime.Now.ToString("yyyy")#>
+*/
 ﻿	#region 按键及索引 删除
 <#
 //var modelName = FormatUtil.ToCodeName(Table.Name);

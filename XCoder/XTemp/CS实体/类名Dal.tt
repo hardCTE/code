@@ -1,0 +1,489 @@
+/*
+ * XCoder v<#=Version#>
+ * 作者：<#=Environment.UserName + "/" + Environment.MachineName#>
+ * 时间：<#=DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")#>
+ * 版权：hardCTE 2016~<#=DateTime.Now.ToString("yyyy")#>
+*/
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using App.FrameCore;
+using Dapper;
+
+namespace <#=Config.NameSpace#>
+{<#
+	var modelName = FormatUtil.ToCodeName(Table.Name);
+#>
+	/// <summary>
+    /// <#=modelName#> 数据访问层
+    /// </summary>
+    public partial class <#=modelName#>Dal : DbBase
+    {
+		#region 定义
+
+        public <#=modelName#>Dal(IDbConnection dbCon = null) : base(dbCon)
+        {
+		}
+
+        #endregion
+
+		#region 查询
+
+        #region 按键及索引 查询
+<#
+foreach(IDataIndex di in Table.Indexes){
+	if(di.Columns==null||di.Columns.Length<1)continue;
+
+	var idxName = FormatUtil.ToCodeName(di.Name);
+	var keyFields = Table.Columns.Where(p => di.Columns.Contains(p.Name));
+
+	// 函数参数列表
+	var paraList = keyFields.Select(p => string.Format("{0} {1}",
+			FormatUtil.ToFieldTypeString(p),
+			FormatUtil.ToParamName(p.Name)));
+	var strParas = String.Join(",", paraList);
+
+	// sql语句中参数
+	var sqlParaList = keyFields.Select(p => string.Format("{0}=@{1}",
+			p.Name,
+			FormatUtil.ToCodeName(p.Name)));
+	var strSqlPara = String.Join(" and ", sqlParaList);
+
+	// sql对象
+	var sqlObjList = keyFields.Select(p => string.Format("{0} = {1}",
+			FormatUtil.ToCodeName(p.Name),
+			FormatUtil.ToParamName(p.Name)));
+	var strSqlObj = String.Join(" , ", sqlObjList);
+
+	if(di.Name.ToLower() == "primary"){
+	#>
+		/// <summary>
+        /// 根据主键获取实体
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+		String colDescr=Field.Description;
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
+	#>	/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
+	<#}#>	/// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual <#=modelName#> GetByPk(<#=strParas#>, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#>";
+
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+
+            return DbConn.QueryFirst<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
+<#			
+	}else if(di.Unique){
+#>
+		/// <summary>
+        /// 根据唯一索引获取实体
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+		String colDescr=Field.Description;
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
+	#>	/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
+	<#}#>	/// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual <#=modelName#> GetByUk<#=idxName#>(<#=strParas#>, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#>";
+
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+
+            return DbConn.QueryFirst<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
+<#
+	}else{
+#>
+		/// <summary>
+        /// 根据索引获取实体列表
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+		String colDescr=Field.Description;
+        if(!String.IsNullOrEmpty(colDescr)) colDescr=colDescr.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");	
+	#>	/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=colDescr#></param>
+	<#}#>	/// <param name="top">获取行数(默认为0，即所有)</param>
+        /// <param name="sort">排序方式(不包含关键字Order By)</param>
+		/// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual IEnumerable<<#=modelName#>> GetByIdx<#=idxName#>(<#=strParas#>, int top = 0, string sort = null, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#> {1} {2}";
+
+			var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (top > 0)
+            {
+                limitClause = "LIMIT " + top;
+            }
+
+            var sql = string.Format(format, 
+				<#=modelName#>._.DataBaseTableName,
+				sortClause, limitClause);
+
+            return DbConn.Query<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
+<#
+	}
+}
+#>
+        #endregion
+
+        #region 自定义查询
+
+        /// <summary>
+        /// 自定义条件查询
+        /// </summary>
+        /// <param name="where">自定义条件，where子句（不包含关键字Where）</param>
+        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <param name="top">获取行数(默认为0，即所有)</param>
+        /// <param name="sort">排序方式(不包含关键字Order By)</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual IEnumerable<<#=modelName#>> GetTopSort(string where, object param = null,
+            int top = 0, string sort = null, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} {1} {2} {3}";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (top > 0)
+            {
+                limitClause = "LIMIT " + top;
+            }
+
+            var sql = string.Format(format,
+                <#=modelName#>._.DataBaseTableName,
+                whereClause, sortClause, limitClause);
+
+            return DbConn.Query<<#=modelName#>>(
+                sql: sql,
+                param: param,
+                transaction: tran);
+        }
+
+        #endregion
+
+        #region 分页
+
+        /// <summary>
+        /// 分页信息
+        /// </summary>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="where">过滤条件</param>
+        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <returns>
+        /// Item1: 总记录数
+        /// Item2: 页数
+        /// </returns>
+        public virtual Tuple<Int64, Int64> GetPageInfo(int pageSize, string where = null, object param = null)
+        {
+            const string format = @"SELECT COUNT(*) FROM {0} {1}";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sql = string.Format(format,
+                <#=modelName#>._.DataBaseTableName,
+                whereClause);
+
+            var recordCount = DbConn.ExecuteScalar<Int64>(sql, param);
+
+            var pageCount = 1L;
+            if (pageSize != 0)
+            {
+                var lastPageCount = recordCount%pageSize;
+                pageCount = recordCount/pageSize + (lastPageCount > 0 ? 1 : 0);
+            }
+
+            return new Tuple<long, long>(recordCount, pageCount);
+        }
+
+        /// <summary>
+        /// 获取分页列表
+        /// </summary>
+        /// <param name="pageIndex">页索引（从1开始）</param>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="where">过滤条件</param>
+        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <param name="sort">排序方式(不包含关键字Order By)</param>
+        /// <returns></returns>
+        public virtual IEnumerable<<#=modelName#>> GetPageList(Int64 pageIndex, int pageSize,
+            string where = null, object param = null, string sort = null)
+        {
+            const string format = "SELECT * FROM {0} {1} {2} {3};";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (pageIndex > 0 && pageSize > 0)
+            {
+                limitClause = $"LIMIT {(pageSize - 1L)*pageSize},{pageSize}";
+            }
+
+            var sql = string.Format(format,
+                <#=modelName#>._.DataBaseTableName,
+                whereClause, sortClause, limitClause);
+
+            return DbConn.Query<<#=modelName#>>(
+                sql: sql,
+                param: param);
+        }
+
+        #endregion
+
+        #endregion
+<#
+// sql 列名（a_b,ab_cd）
+String strSqlColumns = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => s.ColumnName));
+
+// sql 参数（@AB,@AbCd）
+String strSqlParas = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => "@" + FormatUtil.ToCodeName(s.Name)));
+
+// 自增列
+IDataColumn IdentityField = Table.Columns.FirstOrDefault(p => p.Identity);
+
+// 主键列表
+IEnumerable<IDataColumn> PrimaryKeyFields = Table.Columns.Where(p => p.PrimaryKey);
+
+// 获取自增Value语句
+String strSqlLastInsertId = IdentityField == null ? string.Empty : "SELECT LAST_INSERT_ID();";
+
+// sql keyvalue语句（columnname=@CodeName,columnname2=@CodeName2)
+String strSqlColKvs = String.Join(",", Table.Columns.Where(p => !p.Identity).Select(s => string.Format("{0}=@{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
+
+// sql 主键的keyvalue语句（columnname=@OriginalCodeName,columnname2=@OriginalCodeName2)
+String strSqlKeyKvs = String.Join(" AND ", PrimaryKeyFields.Select(s => string.Format("{0}=@Original{1}", s.ColumnName, FormatUtil.ToCodeName(s.Name))));
+String strSqlKeyObj = String.Join(" , ", PrimaryKeyFields.Select(s => string.Format("Original{0} = {1}", FormatUtil.ToCodeName(s.Name),FormatUtil.ToParamName(s.Name))));
+
+// 主键参数（int id,string codeName）
+String strKeyParam = String.Join(",", PrimaryKeyFields.Select(s => string.Format("{0} {1}", FormatUtil.ToFieldTypeString(s), FormatUtil.ToParamName(s.Name))));
+#>
+		#region Add
+
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <param name="item">实体</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int Add(<#=modelName#> item, IDbTransaction tran = null)
+        {
+            const string format = @"INSERT INTO {0}(<#=strSqlColumns#>) 
+				VALUES(<#=strSqlParas#>);
+				<#=strSqlLastInsertId#>";
+
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+<#if(IdentityField != null) {#>
+			item.<#=FormatUtil.ToCodeName(IdentityField.Name)#> = DbConn.ExecuteScalar<<#=IdentityField.DataType.Name#>>(sql, param: item, transaction: tran);
+<#}else{#>
+			DbConn.ExecuteScalar(sql, param: item, transaction: tran);
+<#}
+
+foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
+{
+	var fieldName = FormatUtil.ToCodeName(Field.Name);
+#>			item.Original<#=fieldName#> = item.<#=fieldName#>;
+<#
+}#>
+            return 1;
+        }
+
+        /// <summary>
+        /// 批量添加
+        /// </summary>
+        /// <param name="items">实体列表</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int Add(IEnumerable<<#=modelName#>> items, IDbTransaction tran = null)
+        {
+            var count = 0;
+            foreach (var item in items)
+            {
+                Add(item, tran);
+                count++;
+            }
+
+            return count;
+        }
+
+        #endregion
+
+        #region Update
+
+        /// <summary>
+        /// 更新（根据原始主键OriginalXXX更新其它字段信息）
+        /// </summary>
+        /// <param name="item">实体对象</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int Update(<#=modelName#> item, IDbTransaction tran = null)
+        {
+            const string format = @"UPDATE {0} 
+					SET <#=strSqlColKvs#> 
+					WHERE <#=strSqlKeyKvs#>;";
+
+            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+
+            return DbConn.Execute(sql, param: item, transaction: tran);
+        }
+
+        /// <summary>
+        /// 更新（根据原始主键OriginalXXX更新包含的字段列表）
+        /// </summary>
+        /// <param name="item">仅更新的字段、OriginalXXX字段</param>
+        /// <param name="nameList">包含的name列表</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int Update(<#=modelName#> item, IList<string> nameList, IDbTransaction tran = null)
+        {
+            if (nameList == null)
+            {
+                return Update(item, tran);
+            }
+
+            var curFieldList = <#=modelName#>._.AllFields.Where(f => nameList.Contains(f.Name) && !f.IsReadonly);
+            if (!curFieldList.Any())
+            {
+                return 0;
+            }
+
+            const string format = "UPDATE {0} SET {1} WHERE {2};";
+
+            var setClause = curFieldList.Aggregate(string.Empty,
+                (raw, p) => $"{raw},{p.ColumnName}=@{p.Name}",
+                last => last.Trim(','));
+
+            var originalKeys = <#=modelName#>._.AllFields.Where(p => p.IsPrimaryKey && p.IsReadonly);
+            var whereClause = originalKeys.Aggregate(string.Empty,
+                (raw, p) => $"{raw} and {p.ColumnName}=@{p.Name}",
+                last => last.Trim().Substring(4));
+
+            var sql = string.Format(format,
+                <#=modelName#>._.DataBaseTableName,
+                setClause, whereClause);
+
+            return DbConn.Execute(sql, param: item, transaction: tran);
+        }
+
+        /// <summary>
+        /// 批量更新
+        /// </summary>
+        /// <param name="items">实体对象集合</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int Update(IEnumerable<<#=modelName#>> items, IDbTransaction tran = null)
+        {
+            var count = 0;
+            foreach (var item in items)
+            {
+                Update(item, tran);
+                count++;
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// 自定义更新
+        /// </summary>
+        /// <param name="item">实体对象（仅更新的字段、Where字段）</param>
+        /// <param name="strSet">set语句（不含set关键字，可以用sql参数，Eg：cloumn_name=@CloumnName）</param>
+        /// <param name="strWhere">where语句（不含where关键字，可以用sql参数，Eg：id=@Id）</param>
+        /// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual int Update(<#=modelName#> item, string strSet, string strWhere, IDbTransaction tran = null)
+        {
+            const string format = "UPDATE {0} SET {1} {2};";
+
+            if (string.IsNullOrWhiteSpace(strSet))
+            {
+                return 0;
+            }
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(strWhere))
+            {
+                whereClause = strWhere.Trim();
+
+                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = "WHERE " + whereClause;
+                }
+            }
+
+            var sql = string.Format(format,
+                <#=modelName#>._.DataBaseTableName,
+                strSet, whereClause);
+
+            return DbConn.Execute(sql, param: item, transaction: tran);
+        }
+
+        #endregion
+
+		#region Remove
+
+		<#@include Name="内嵌_删除.tt"#>
+
+        #endregion
+    }
+}

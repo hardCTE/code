@@ -1,0 +1,414 @@
+namespace CS实体
+{
+    using System.Linq;
+    using TemplateHelper;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Web;
+    using System.Xml;
+    using XCode;
+    using XCode.Test;
+    using XCode.Transform;
+    using XCode.Web;
+    using XCode.Model;
+    using XCode.Exceptions;
+    using XCode.Configuration;
+    using XCode.Common;
+    using XCode.Sync;
+    using XCode.Membership;
+    using XCode.DataAccessLayer;
+    using XCode.Code;
+    using XCode.Cache;
+    using System.Windows.Forms;
+    using System.Threading.Tasks;
+    using System.IO;
+    using NewLife;
+    using NewLife.Xml;
+    using NewLife.Windows;
+    using NewLife.Data;
+    using NewLife.Web;
+    using NewLife.Threading;
+    using NewLife.Serialization;
+    using NewLife.Security;
+    using NewLife.Remoting;
+    using NewLife.Reflection;
+    using NewLife.Net;
+    using NewLife.Model;
+    using NewLife.Messaging;
+    using NewLife.Log;
+    using NewLife.IO;
+    using NewLife.Configuration;
+    using NewLife.Common;
+    using NewLife.Collections;
+    using NewLife.IP;
+    using NewLife.Agent;
+    
+    
+    #line 1 "内嵌_删除.tt"
+    public class 内嵌_删除 : XCoder.XCoderBase
+    {
+        public override string Render()
+        {
+            
+            #line 1 "内嵌_删除.tt"
+            this.Write("﻿\t#region 按键及索引 删除\r\n");
+            
+            #line default
+            #line hidden
+            
+            #line 2 "内嵌_删除.tt"
+
+var modelName = FormatUtil.ToCodeName(Table.Name);
+
+foreach(IDataIndex di in Table.Indexes){
+	if(di.Columns == null || di.Columns.Length < 1) continue;
+
+	var idxName = FormatUtil.ToCodeName(di.Name);
+	var keyFields = Table.Columns.Where(p => di.Columns.Contains(p.Name));
+
+	// 函数参数列表（int id,string codeName）
+	var strParas = String.Join(", ", keyFields.Select(p => string.Format("{0} {1}", FormatUtil.ToFieldTypeString(p), FormatUtil.ToParamName(p.Name))));
+
+	// sql语句中参数 keyvalue语句（columnname=@CodeName AND columnname2=@CodeName2)
+	var strSqlKvs = String.Join(" AND ", keyFields.Select(p => string.Format("{0}=@Original{1}", p.ColumnName, FormatUtil.ToCodeName(p.Name))));
+
+	// sql对象
+	var strSqlObj = String.Join(", ", keyFields.Select(p => string.Format("Original{0} = {1}", FormatUtil.ToCodeName(p.Name), FormatUtil.ToParamName(p.Name))));
+
+	// 删除依据
+	var strCondition = di.Name.ToLower() == "primary" ? "主键" : "索引";
+	var strConditionName = di.Name.ToLower() == "primary" ? "Pk" : "Idx" + idxName;
+	
+	
+            
+            #line default
+            #line hidden
+            
+            #line 24 "内嵌_删除.tt"
+            this.Write("\r\n\t\t/// <summary>\r\n        /// 根据");
+            
+            #line default
+            #line hidden
+            
+            #line 26 "内嵌_删除.tt"
+            this.Write(strCondition);
+            
+            #line default
+            #line hidden
+            
+            #line 26 "内嵌_删除.tt"
+            this.Write("删除\r\n        /// </summary>\r\n\t");
+            
+            #line default
+            #line hidden
+            
+            #line 28 "内嵌_删除.tt"
+
+	foreach(IDataColumn Field in keyFields){
+            
+            #line default
+            #line hidden
+            
+            #line 29 "内嵌_删除.tt"
+            this.Write("\t\r\n\t\t/// <param name=\"");
+            
+            #line default
+            #line hidden
+            
+            #line 30 "内嵌_删除.tt"
+            this.Write(FormatUtil.ToParamName(Field.Name));
+            
+            #line default
+            #line hidden
+            
+            #line 30 "内嵌_删除.tt"
+            this.Write("\">");
+            
+            #line default
+            #line hidden
+            
+            #line 30 "内嵌_删除.tt"
+            this.Write(FormatUtil.ToSigleDisplay(Field.Description));
+            
+            #line default
+            #line hidden
+            
+            #line 30 "内嵌_删除.tt"
+            this.Write("</param>");
+            
+            #line default
+            #line hidden
+            
+            #line 30 "内嵌_删除.tt"
+}
+            
+            #line default
+            #line hidden
+            
+            #line 30 "内嵌_删除.tt"
+            this.Write("\r\n\t\t/// <param name=\"tran\">事务</param>\r\n        /// <returns></returns>\r\n\t\tpublic " +
+                    "virtual int RemoveBy");
+            
+            #line default
+            #line hidden
+            
+            #line 33 "内嵌_删除.tt"
+            this.Write(strConditionName);
+            
+            #line default
+            #line hidden
+            
+            #line 33 "内嵌_删除.tt"
+            this.Write("(");
+            
+            #line default
+            #line hidden
+            
+            #line 33 "内嵌_删除.tt"
+            this.Write(strParas);
+            
+            #line default
+            #line hidden
+            
+            #line 33 "内嵌_删除.tt"
+            this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = @\"DEL" +
+                    "ETE FROM {0} WHERE ");
+            
+            #line default
+            #line hidden
+            
+            #line 35 "内嵌_删除.tt"
+            this.Write(strSqlKvs);
+            
+            #line default
+            #line hidden
+            
+            #line 35 "内嵌_删除.tt"
+            this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
+            
+            #line default
+            #line hidden
+            
+            #line 37 "内嵌_删除.tt"
+            this.Write(modelName);
+            
+            #line default
+            #line hidden
+            
+            #line 37 "内嵌_删除.tt"
+            this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: new {");
+            
+            #line default
+            #line hidden
+            
+            #line 39 "内嵌_删除.tt"
+            this.Write(strSqlObj);
+            
+            #line default
+            #line hidden
+            
+            #line 39 "内嵌_删除.tt"
+            this.Write("}, transaction: tran);\r\n        }\r\n\t\r\n\t");
+            
+            #line default
+            #line hidden
+            
+            #line 42 "内嵌_删除.tt"
+
+	// 只有一列时，支持批量删除功能
+	if(keyFields.Count() == 1)
+	{
+		String keyParam = FormatUtil.ToParamName(keyFields.First().Name) + "s";
+            
+            #line default
+            #line hidden
+            
+            #line 46 "内嵌_删除.tt"
+            this.Write("\r\n\t\t/// <summary>\r\n        /// 根据");
+            
+            #line default
+            #line hidden
+            
+            #line 48 "内嵌_删除.tt"
+            this.Write(strCondition);
+            
+            #line default
+            #line hidden
+            
+            #line 48 "内嵌_删除.tt"
+            this.Write("批量删除\r\n        /// </summary>\r\n        /// <param name=\"");
+            
+            #line default
+            #line hidden
+            
+            #line 50 "内嵌_删除.tt"
+            this.Write(keyParam);
+            
+            #line default
+            #line hidden
+            
+            #line 50 "内嵌_删除.tt"
+            this.Write("\">");
+            
+            #line default
+            #line hidden
+            
+            #line 50 "内嵌_删除.tt"
+            this.Write(FormatUtil.ToSigleDisplay(keyFields.First().Description));
+            
+            #line default
+            #line hidden
+            
+            #line 50 "内嵌_删除.tt"
+            this.Write("列表</param>\r\n        /// <param name=\"tran\">事务</param>\r\n        /// <returns></ret" +
+                    "urns>\r\n        public virtual int RemoveBy");
+            
+            #line default
+            #line hidden
+            
+            #line 53 "内嵌_删除.tt"
+            this.Write(strConditionName);
+            
+            #line default
+            #line hidden
+            
+            #line 53 "内嵌_删除.tt"
+            this.Write("s(IEnumerable<");
+            
+            #line default
+            #line hidden
+            
+            #line 53 "内嵌_删除.tt"
+            this.Write(FormatUtil.ToFieldTypeString(keyFields.First()));
+            
+            #line default
+            #line hidden
+            
+            #line 53 "内嵌_删除.tt"
+            this.Write("> ");
+            
+            #line default
+            #line hidden
+            
+            #line 53 "内嵌_删除.tt"
+            this.Write(keyParam);
+            
+            #line default
+            #line hidden
+            
+            #line 53 "内嵌_删除.tt"
+            this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = @\"DEL" +
+                    "ETE FROM {0} WHERE ");
+            
+            #line default
+            #line hidden
+            
+            #line 55 "内嵌_删除.tt"
+            this.Write(strSqlKvs);
+            
+            #line default
+            #line hidden
+            
+            #line 55 "内嵌_删除.tt"
+            this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
+            
+            #line default
+            #line hidden
+            
+            #line 57 "内嵌_删除.tt"
+            this.Write(modelName);
+            
+            #line default
+            #line hidden
+            
+            #line 57 "内嵌_删除.tt"
+            this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: ");
+            
+            #line default
+            #line hidden
+            
+            #line 59 "内嵌_删除.tt"
+            this.Write(keyParam);
+            
+            #line default
+            #line hidden
+            
+            #line 59 "内嵌_删除.tt"
+            this.Write(".Select(p => new {Original");
+            
+            #line default
+            #line hidden
+            
+            #line 59 "内嵌_删除.tt"
+            this.Write(FormatUtil.ToCodeName(keyFields.First().Name));
+            
+            #line default
+            #line hidden
+            
+            #line 59 "内嵌_删除.tt"
+            this.Write(" = p}), transaction: tran);\r\n        }\r\n\t");
+            
+            #line default
+            #line hidden
+            
+            #line 61 "内嵌_删除.tt"
+}
+}
+
+            
+            #line default
+            #line hidden
+            
+            #line 63 "内嵌_删除.tt"
+            this.Write(@"
+		#endregion
+
+		/// <summary>
+        /// 自定义条件删除
+        /// </summary>
+        /// <param name=""where"">自定义条件，where子句（不包含关键字Where）</param>
+        /// <param name=""param"">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
+        /// <param name=""tran"">事务</param>
+        /// <returns></returns>
+        public virtual int Remove(string where, object param = null, IDbTransaction tran = null)
+        {
+            const string format = @""DELETE FROM {0} {1};"";
+
+            var whereClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(where))
+            {
+                whereClause = where.Trim();
+
+                if (!whereClause.StartsWith(""where"", StringComparison.OrdinalIgnoreCase))
+                {
+                    whereClause = ""WHERE "" + whereClause;
+                }
+            }
+
+            var sql = string.Format(format,
+                ");
+            
+            #line default
+            #line hidden
+            
+            #line 89 "内嵌_删除.tt"
+            this.Write(modelName);
+            
+            #line default
+            #line hidden
+            
+            #line 89 "内嵌_删除.tt"
+            this.Write("._.DataBaseTableName,\r\n                whereClause);\r\n\r\n            return DbConn" +
+                    ".Execute(sql, param: param, transaction: tran);\r\n        }");
+            
+            #line default
+            #line hidden
+            return this.Output.ToString();
+        }
+    }
+    
+    #line default
+    #line hidden
+}

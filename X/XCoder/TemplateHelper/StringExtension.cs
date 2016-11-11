@@ -12,7 +12,7 @@ namespace TemplateHelper
         /// <summary>
         /// 非法字符
         /// </summary>
-        private static char[] _cleanChars = new char[] { ' ', '_', '-', '.' };
+        private static char[] _cleanChars = new char[] {' ', '_', '-', '.', '/', '\\', '?'}; // add /、\、? xdb:2016-11-11 16:22:40
 
         /// <summary>
         /// 如果生成的名称为保留字则添加的后缀

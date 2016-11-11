@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using NewLife;
 using NewLife.Model;
 using NewLife.Reflection;
+using TemplateHelper;
 using XCode.DataAccessLayer;
 using XTemplate.Templating;
 
@@ -179,7 +180,8 @@ namespace XCoder
                     var content = item.Value;
 
                     // 添加文件头
-                    if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && key.EndsWithIgnoreCase(".cs"))
+                    // supply .tt suffix. xdb:2016-11-11 16:40:59
+                    if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && (key.EndsWithIgnoreCase(".cs") || key.EndsWithIgnoreCase(".tt")))
                         content = Config.HeadTemplate + content;
 
                     templates.Add(key.Substring(name.Length + 1), content);
@@ -207,7 +209,8 @@ namespace XCoder
                         if (name.StartsWith(@"\")) name = name.Substring(1);
 
                         // 添加文件头
-                        if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && name.EndsWithIgnoreCase(".cs"))
+                        // supply .tt suffix. xdb:2016-11-11 16:40:59
+                        if (Config.UseHeadTemplate && !String.IsNullOrEmpty(Config.HeadTemplate) && (name.EndsWithIgnoreCase(".cs") || name.EndsWithIgnoreCase(".tt")))
                             content = Config.HeadTemplate + content;
 
                         templates.Add(name, content);
@@ -253,10 +256,17 @@ namespace XCoder
                 // 计算输出文件名
                 var fileName = Path.GetFileName(item.Name);
                 var fname = Config.UseCNFileName ? table.DisplayName : table.Name;
-                fname = fname.Replace("/", "_").Replace("\\", "_").Replace("?", null);
+
+                // to class name. xdb:2016-11-11 16:23:28
+                // fname = fname.Replace("/", "_").Replace("\\", "_").Replace("?", null);
+                fname = fname.ToCodeName();
+
                 // 如果中文名无效，采用英文名
                 if (String.IsNullOrEmpty(Path.GetFileNameWithoutExtension(fname)) || fname[0] == '.') fname = table.Name;
                 fileName = fileName.Replace("类名", fname).Replace("中文名", fname).Replace("连接名", Config.EntityConnName);
+
+                // replace .tt to .cs xdb:2016-11-11 16:18:24
+                fileName = fileName.Replace(".tt", ".cs");
 
                 fileName = Path.Combine(outpath, fileName);
 
