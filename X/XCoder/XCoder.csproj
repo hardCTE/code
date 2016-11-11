@@ -287,6 +287,7 @@
       <LastGenOutput>XCoder.log</LastGenOutput>
     </EmbeddedResource>
     <None Include="Template\CS实体\UtilityFun.ttinclude" />
+    <EmbeddedResource Include="Template\CS实体\内嵌_删除.tt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NewLife.Core\NewLife.Core.csproj">
@@ -344,16 +345,10 @@
     <EmbeddedResource Include="XRegex\Sample\网页\最外层嵌套.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Template\CS实体\中文名.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Template\CS实体\中文名.tt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Template\CS实体\删除Dal.xt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

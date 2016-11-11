@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-﻿using App.DAL;
+using App.FrameCore;
 
 namespace <#=Config.NameSpace#>
 {<#
-    String tdis=Table.DisplayName;
-    if(!String.IsNullOrEmpty(tdis)) tdis=tdis.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
-    String tdes=Table.Description;
-    if(!String.IsNullOrEmpty(tdes)) tdes=tdes.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
+    String tdis=FormatUtil.ToSigleDisplay(Table.DisplayName);
+    String tdes=FormatUtil.ToSigleDisplay(Table.Description);
     if(String.IsNullOrEmpty(tdis)) tdis=tdes;
 
 	var modelName = TemplateHelper.FormatUtil.ToCodeName(Table.Name);
@@ -30,13 +28,15 @@ if(Table.Columns.Count>0)
         #region 属性<#
     foreach(IDataColumn Field in Table.Columns)
     {
-        String des=Field.Description;
-        if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ").Replace("\\", "\\\\").Replace("'", "").Replace("\"", "");
-        String dis = Field.DisplayName;
-        if(!String.IsNullOrEmpty(dis)) dis=dis.Replace("\r\n"," ").Replace("'", " ").Replace("\"", "");
-
+        String des = FormatUtil.ToSigleDisplay(Field.Description);
 		var fieldType = TemplateHelper.FormatUtil.ToFieldTypeString(Field);
 		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+		if(Field.PrimaryKey)
+		{#>
+		/// <summary>Original<#=des#></summary>
+		public virtual <#=fieldType#> Original<#=fieldName#> { get; set; }
+		<#}
 #>
         /// <summary><#=des#></summary>
 		public virtual <#=fieldType#> <#=fieldName#> { get; set; }
@@ -62,8 +62,8 @@ if(Table.Columns.Count>0)
 
         /// <summary>
         /// 获取/设置 字段值。
-        /// 一个索引，基类使用反射实现。
-        /// 派生实体类可重写该索引，以避免反射带来的性能损耗
+        /// 一个索引
+        /// 派生实体类可重写该索引
         /// </summary>
         /// <param name="name">字段名</param>
         /// <returns></returns>
@@ -76,6 +76,10 @@ if(Table.Columns.Count>0)
     foreach(IDataColumn Field in Table.Columns)
     {
 		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+		if(Field.PrimaryKey){#>
+					case __.Original<#=fieldName#> : return Original<#=fieldName#>;<#
+		}
 #>
                     case __.<#=fieldName#> : return <#=fieldName#>;<#
     }
@@ -91,6 +95,16 @@ if(Table.Columns.Count>0)
     foreach(IDataColumn Field in Table.Columns)
     {
 		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+		if(Field.PrimaryKey){
+			if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
+		#>
+					case __.Original<#=fieldName#> : Original<#=fieldName#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
+			}else{
+		#>
+					case __.Original<#=fieldName#> : Original<#=fieldName#> = (<#=Field.DataType.Name#>)value; break;<#
+			}
+		}
 
         if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
 #>
@@ -113,18 +127,17 @@ if(Table.Columns.Count>0)
 
 		/// <summary>取得<#=tdis#>字段名称的快捷方式</summary>
         public partial class __
-        {
-<#
+        {<#
 foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 {
 	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
 
-    String des=Field.Description;
-    if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
+    String des = FormatUtil.ToSigleDisplay(Field.Description);
+
 	if(Field.PrimaryKey){
 #>
 			///<summary>原始主键，<#=des#></summary>
-            public const String Original<#=fieldName#> = "<#=fieldName#>";
+            public const String Original<#=fieldName#> = "Original<#=fieldName#>";
 <#}#>
             ///<summary><#=des#></summary>
             public const String <#=fieldName#> = "<#=fieldName#>";

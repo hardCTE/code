@@ -1302,18 +1302,18 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
             #line 469 "中文名Dal.tt"
             this.Write("._.DataBaseTableName,\r\n                strSet, whereClause);\r\n\r\n            retur" +
                     "n DbConn.Execute(sql, param: item, transaction: tran);\r\n        }\r\n\r\n        #en" +
-                    "dregion\r\n\r\n        #region Remove\r\n\r\n\t\t");
+                    "dregion\r\n\r\n\t\t#region Remove\r\n\r\n\t\t");
             
             #line default
             #line hidden
             
-            #line 1 "删除Dal.xt"
-            this.Write("﻿");
+            #line 1 "内嵌_删除.tt"
+            this.Write("﻿\t#region 按键及索引 删除\r\n");
             
             #line default
             #line hidden
             
-            #line 1 "删除Dal.xt"
+            #line 2 "内嵌_删除.tt"
 
 //var modelName = FormatUtil.ToCodeName(Table.Name);
 
@@ -1341,136 +1341,136 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 23 "删除Dal.xt"
-            this.Write("\r\n\t\t#region 按键及索引 删除\r\n\r\n\t\t/// <summary>\r\n        /// 根据");
+            #line 24 "内嵌_删除.tt"
+            this.Write("\r\n\t\t/// <summary>\r\n        /// 根据");
             
             #line default
             #line hidden
             
-            #line 27 "删除Dal.xt"
+            #line 26 "内嵌_删除.tt"
             this.Write(strCondition);
             
             #line default
             #line hidden
             
-            #line 27 "删除Dal.xt"
+            #line 26 "内嵌_删除.tt"
             this.Write("删除\r\n        /// </summary>\r\n\t");
             
             #line default
             #line hidden
             
-            #line 29 "删除Dal.xt"
+            #line 28 "内嵌_删除.tt"
 
 	foreach(IDataColumn Field in keyFields){
             
             #line default
             #line hidden
             
-            #line 30 "删除Dal.xt"
+            #line 29 "内嵌_删除.tt"
             this.Write("\t\r\n\t\t/// <param name=\"");
             
             #line default
             #line hidden
             
-            #line 31 "删除Dal.xt"
+            #line 30 "内嵌_删除.tt"
             this.Write(FormatUtil.ToParamName(Field.Name));
             
             #line default
             #line hidden
             
-            #line 31 "删除Dal.xt"
+            #line 30 "内嵌_删除.tt"
             this.Write("\">");
             
             #line default
             #line hidden
             
-            #line 31 "删除Dal.xt"
+            #line 30 "内嵌_删除.tt"
             this.Write(FormatUtil.ToSigleDisplay(Field.Description));
             
             #line default
             #line hidden
             
-            #line 31 "删除Dal.xt"
+            #line 30 "内嵌_删除.tt"
             this.Write("</param>");
             
             #line default
             #line hidden
             
-            #line 31 "删除Dal.xt"
+            #line 30 "内嵌_删除.tt"
 }
             
             #line default
             #line hidden
             
-            #line 31 "删除Dal.xt"
+            #line 30 "内嵌_删除.tt"
             this.Write("\r\n\t\t/// <param name=\"tran\">事务</param>\r\n        /// <returns></returns>\r\n\t\tpublic " +
                     "virtual int RemoveBy");
             
             #line default
             #line hidden
             
-            #line 34 "删除Dal.xt"
+            #line 33 "内嵌_删除.tt"
             this.Write(strConditionName);
             
             #line default
             #line hidden
             
-            #line 34 "删除Dal.xt"
+            #line 33 "内嵌_删除.tt"
             this.Write("(");
             
             #line default
             #line hidden
             
-            #line 34 "删除Dal.xt"
+            #line 33 "内嵌_删除.tt"
             this.Write(strParas);
             
             #line default
             #line hidden
             
-            #line 34 "删除Dal.xt"
+            #line 33 "内嵌_删除.tt"
             this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = @\"DEL" +
                     "ETE FROM {0} WHERE ");
             
             #line default
             #line hidden
             
-            #line 36 "删除Dal.xt"
+            #line 35 "内嵌_删除.tt"
             this.Write(strSqlKvs);
             
             #line default
             #line hidden
             
-            #line 36 "删除Dal.xt"
+            #line 35 "内嵌_删除.tt"
             this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
             
             #line default
             #line hidden
             
-            #line 38 "删除Dal.xt"
+            #line 37 "内嵌_删除.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 38 "删除Dal.xt"
+            #line 37 "内嵌_删除.tt"
             this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: new {");
             
             #line default
             #line hidden
             
-            #line 40 "删除Dal.xt"
+            #line 39 "内嵌_删除.tt"
             this.Write(strSqlObj);
             
             #line default
             #line hidden
             
-            #line 40 "删除Dal.xt"
+            #line 39 "内嵌_删除.tt"
             this.Write("}, transaction: tran);\r\n        }\r\n\t\r\n\t");
             
             #line default
             #line hidden
             
-            #line 43 "删除Dal.xt"
+            #line 42 "内嵌_删除.tt"
 
 	// 只有一列时，支持批量删除功能
 	if(keyFields.Count() == 1)
@@ -1480,135 +1480,135 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 47 "删除Dal.xt"
+            #line 46 "内嵌_删除.tt"
             this.Write("\r\n\t\t/// <summary>\r\n        /// 根据");
             
             #line default
             #line hidden
             
-            #line 49 "删除Dal.xt"
+            #line 48 "内嵌_删除.tt"
             this.Write(strCondition);
             
             #line default
             #line hidden
             
-            #line 49 "删除Dal.xt"
+            #line 48 "内嵌_删除.tt"
             this.Write("批量删除\r\n        /// </summary>\r\n        /// <param name=\"");
             
             #line default
             #line hidden
             
-            #line 51 "删除Dal.xt"
+            #line 50 "内嵌_删除.tt"
             this.Write(keyParam);
             
             #line default
             #line hidden
             
-            #line 51 "删除Dal.xt"
+            #line 50 "内嵌_删除.tt"
             this.Write("\">");
             
             #line default
             #line hidden
             
-            #line 51 "删除Dal.xt"
+            #line 50 "内嵌_删除.tt"
             this.Write(FormatUtil.ToSigleDisplay(keyFields.First().Description));
             
             #line default
             #line hidden
             
-            #line 51 "删除Dal.xt"
+            #line 50 "内嵌_删除.tt"
             this.Write("列表</param>\r\n        /// <param name=\"tran\">事务</param>\r\n        /// <returns></ret" +
                     "urns>\r\n        public virtual int RemoveBy");
             
             #line default
             #line hidden
             
-            #line 54 "删除Dal.xt"
+            #line 53 "内嵌_删除.tt"
             this.Write(strConditionName);
             
             #line default
             #line hidden
             
-            #line 54 "删除Dal.xt"
+            #line 53 "内嵌_删除.tt"
             this.Write("s(IEnumerable<");
             
             #line default
             #line hidden
             
-            #line 54 "删除Dal.xt"
+            #line 53 "内嵌_删除.tt"
             this.Write(FormatUtil.ToFieldTypeString(keyFields.First()));
             
             #line default
             #line hidden
             
-            #line 54 "删除Dal.xt"
+            #line 53 "内嵌_删除.tt"
             this.Write("> ");
             
             #line default
             #line hidden
             
-            #line 54 "删除Dal.xt"
+            #line 53 "内嵌_删除.tt"
             this.Write(keyParam);
             
             #line default
             #line hidden
             
-            #line 54 "删除Dal.xt"
+            #line 53 "内嵌_删除.tt"
             this.Write(", IDbTransaction tran = null)\r\n        {\r\n            const string format = @\"DEL" +
                     "ETE FROM {0} WHERE ");
             
             #line default
             #line hidden
             
-            #line 56 "删除Dal.xt"
+            #line 55 "内嵌_删除.tt"
             this.Write(strSqlKvs);
             
             #line default
             #line hidden
             
-            #line 56 "删除Dal.xt"
+            #line 55 "内嵌_删除.tt"
             this.Write(";\";\r\n\r\n            var sql = string.Format(format, ");
             
             #line default
             #line hidden
             
-            #line 58 "删除Dal.xt"
+            #line 57 "内嵌_删除.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 58 "删除Dal.xt"
+            #line 57 "内嵌_删除.tt"
             this.Write("._.DataBaseTableName);\r\n\r\n            return DbConn.Execute(sql, param: ");
             
             #line default
             #line hidden
             
-            #line 60 "删除Dal.xt"
+            #line 59 "内嵌_删除.tt"
             this.Write(keyParam);
             
             #line default
             #line hidden
             
-            #line 60 "删除Dal.xt"
+            #line 59 "内嵌_删除.tt"
             this.Write(".Select(p => new {Original");
             
             #line default
             #line hidden
             
-            #line 60 "删除Dal.xt"
+            #line 59 "内嵌_删除.tt"
             this.Write(FormatUtil.ToCodeName(keyFields.First().Name));
             
             #line default
             #line hidden
             
-            #line 60 "删除Dal.xt"
+            #line 59 "内嵌_删除.tt"
             this.Write(" = p}), transaction: tran);\r\n        }\r\n\t");
             
             #line default
             #line hidden
             
-            #line 62 "删除Dal.xt"
+            #line 61 "内嵌_删除.tt"
 }
 }
 
@@ -1616,7 +1616,7 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 64 "删除Dal.xt"
+            #line 63 "内嵌_删除.tt"
             this.Write(@"
 		#endregion
 
@@ -1648,13 +1648,13 @@ foreach(IDataIndex di in Table.Indexes){
             #line default
             #line hidden
             
-            #line 90 "删除Dal.xt"
+            #line 89 "内嵌_删除.tt"
             this.Write(modelName);
             
             #line default
             #line hidden
             
-            #line 90 "删除Dal.xt"
+            #line 89 "内嵌_删除.tt"
             this.Write("._.DataBaseTableName,\r\n                whereClause);\r\n\r\n            return DbConn" +
                     ".Execute(sql, param: param, transaction: tran);\r\n        }");
             

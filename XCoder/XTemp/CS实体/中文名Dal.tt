@@ -474,9 +474,9 @@ foreach(IDataColumn Field in Table.Columns.Where(p => p.PrimaryKey))
 
         #endregion
 
-        #region Remove
+		#region Remove
 
-		<#@include Name="删除Dal.xt"#>
+		<#@include Name="内嵌_删除.tt"#>
 
         #endregion
     }
