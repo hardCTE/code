@@ -15,6 +15,10 @@
 /X/NewLife.Cube/Plugins
 /XCoder/Log
 /XCoder/Output
+/Bin
+/Bin4
+/Test
+/XCoder
 *.user
 *.log
 *.config
