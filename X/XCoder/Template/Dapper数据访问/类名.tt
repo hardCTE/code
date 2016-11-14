@@ -13,16 +13,16 @@ namespace <#=Config.NameSpace#>
     #>
     /// <summary><#=tdis#></summary><# if(tdis!=tdes){#>
 	/// <remarks><#=tdes#></remarks><#}#>
-    ///[Description("<#=tdes#>")]<#
+    /// [Description("<#=tdes#>")]<#
 foreach(IDataIndex di in Table.Indexes){if(di.Columns==null||di.Columns.Length<1)continue;#>
-    ///[BindIndex("<#=di.Name#>", <#=di.Unique.ToString().ToLower()#>, "<#=String.Join(",", di.Columns)#>")]<#
+    /// [BindIndex("<#=di.Name#>", <#=di.Unique.ToString().ToLower()#>, "<#=String.Join(",", di.Columns)#>")]<#
 }
 foreach(IDataRelation dr in Table.Relations){#>
-    ///[BindRelation("<#=dr.Column#>", <#=dr.Unique.ToString().ToLower()#>, "<#=dr.RelationTable#>", "<#=dr.RelationColumn#>")]<#}#>
-    ///[BindTable("<#=Table.TableName#>", Description = "<#=tdes#>", ConnName = "<#=Table.ConnName ?? Config.EntityConnName#>", DbType = DatabaseType.<#=Table.DbType#><#if(Table.IsView){#>, IsView = true<#}#>)]
+    /// [BindRelation("<#=dr.Column#>", <#=dr.Unique.ToString().ToLower()#>, "<#=dr.RelationTable#>", "<#=dr.RelationColumn#>")]<#}#>
+    /// [BindTable("<#=Table.TableName#>", Description = "<#=tdes#>", ConnName = "<#=Table.ConnName ?? Config.EntityConnName#>", DbType = DatabaseType.<#=Table.DbType#><#if(Table.IsView){#>, IsView = true<#}#>)]
     public partial class <#=modelName#> : TableModelBase
     {<#
-if(Table.Columns.Count>0)
+if(Table.Columns.Count > 0)
 {
 #>
         #region 属性<#
@@ -91,13 +91,13 @@ if(Table.Columns.Count>0)
             {
                 switch (name)
                 {<#
-    Type conv=typeof(Convert);
+    Type conv = typeof(Convert);
     foreach(IDataColumn Field in Table.Columns)
     {
 		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
 
 		if(Field.PrimaryKey){
-			if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
+			if(conv.GetMethod("To" + Field.DataType.Name, new Type[]{typeof(Object)})!=null){
 		#>
 					case __.Original<#=fieldName#> : Original<#=fieldName#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
 			}else{
@@ -106,7 +106,7 @@ if(Table.Columns.Count>0)
 			}
 		}
 
-        if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
+        if(conv.GetMethod("To" + Field.DataType.Name, new Type[]{typeof(Object)}) != null){
 #>
                     case __.<#=fieldName#> : <#=fieldName#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
         }else{
@@ -128,7 +128,7 @@ if(Table.Columns.Count>0)
 		/// <summary>取得<#=tdis#>字段名称的快捷方式</summary>
         public partial class __
         {<#
-foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+foreach(IDataColumn Field in Table.Columns)
 {
 	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
 
@@ -154,12 +154,11 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
             /// </summary>
             public const string DataBaseTableName = "<#=Table.TableName#>";
 <#
-foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+foreach(IDataColumn Field in Table.Columns)
 {
 	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
-    String des=Field.Description;
-    if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
-
+    String des = FormatUtil.ToSigleDisplay(Field.Description);
+    
 	if(Field.PrimaryKey){
 #>
             ///<summary>原始主键,<#=des#></summary>
@@ -203,7 +202,7 @@ foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
 			///<summary>所有字段列表</summary>
 			public static readonly IList<Field> AllFields = new List<Field>
             {<#
-foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+foreach(IDataColumn Field in Table.Columns)
 {
 	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
 	if(Field.PrimaryKey){#>
