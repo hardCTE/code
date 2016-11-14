@@ -1,0 +1,104 @@
+﻿
+		#region 按键及索引 查询
+<#
+//var modelName = FormatUtil.ToCodeName(Table.Name);
+
+foreach(IDataIndex di in Table.Indexes){
+	if(di.Columns==null||di.Columns.Length<1)continue;
+
+	var idxName = FormatUtil.ToCodeName(di.Name);
+	var keyFields = Table.Columns.Where(p => di.Columns.Contains(p.Name));
+
+	// 函数参数列表
+	var strParas = String.Join(", ", keyFields.Select(p => string.Format("{0} {1}", FormatUtil.ToFieldTypeString(p), FormatUtil.ToParamName(p.Name))));
+
+	// sql语句中参数
+	var strSqlPara = String.Join(" and ", keyFields.Select(p => string.Format("{0}=@{1}", p.Name, FormatUtil.ToCodeName(p.Name))));
+
+	// sql对象
+	var strSqlObj = String.Join(", ", keyFields.Select(p => string.Format("{0} = {1}", FormatUtil.ToCodeName(p.Name), FormatUtil.ToParamName(p.Name))));
+
+	if(di.Name.ToLower() == "primary"){
+	#>
+		/// <summary>
+        /// 根据主键获取实体
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+	#>	/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=FormatUtil.ToSigleDisplay(Field.Description)#></param>
+	<#}#>	/// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual <#=modelName#> GetByPk(<#=strParas#>, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#>";
+
+            var sql = string.Format(format, DataBaseTableName);
+
+            return DbConn.QueryFirst<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
+<#			
+	}else if(di.Unique){
+#>
+		/// <summary>
+        /// 根据唯一索引获取实体
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+	#>	/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=FormatUtil.ToSigleDisplay(Field.Description)#></param>
+	<#}#>	/// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual <#=modelName#> GetByUk<#=idxName#>(<#=strParas#>, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#>";
+
+            var sql = string.Format(format, DataBaseTableName);
+
+            return DbConn.QueryFirst<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
+<#
+	}else{
+#>
+		/// <summary>
+        /// 根据索引获取实体列表
+        /// </summary>
+	<#
+	foreach(IDataColumn Field in keyFields){
+	#>	/// <param name="<#=FormatUtil.ToParamName(Field.Name)#>"><#=FormatUtil.ToSigleDisplay(Field.Description)#></param>
+	<#}#>	/// <param name="top">获取行数(默认为0，即所有)</param>
+        /// <param name="sort">排序方式(不包含关键字Order By)</param>
+		/// <param name="tran">事务</param>
+        /// <returns></returns>
+        public virtual IEnumerable<<#=modelName#>> GetBy<#=idxName#>(<#=strParas#>, int top = 0, string sort = null, IDbTransaction tran = null)
+        {
+            const string format = "SELECT * FROM {0} WHERE <#=strSqlPara#> {1} {2}";
+
+			var sortClause = string.Empty;
+            if (!string.IsNullOrWhiteSpace(sort))
+            {
+                sortClause = "ORDER BY " + sort;
+            }
+
+            var limitClause = string.Empty;
+            if (top > 0)
+            {
+                limitClause = "LIMIT " + top;
+            }
+
+            var sql = string.Format(format, DataBaseTableName, sortClause, limitClause);
+
+            return DbConn.Query<<#=modelName#>>(
+                sql: sql,
+                param: new {<#=strSqlObj#>},
+                transaction: tran);
+        }
+<#
+	}
+}
+#>
+        #endregion

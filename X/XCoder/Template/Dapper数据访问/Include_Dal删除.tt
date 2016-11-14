@@ -35,7 +35,7 @@ foreach(IDataIndex di in Table.Indexes){
         {
             const string format = @"DELETE FROM {0} WHERE <#=strSqlKvs#>;";
 
-            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+            var sql = string.Format(format, DataBaseTableName);
 
             return DbConn.Execute(sql, param: new {<#=strSqlObj#>}, transaction: tran);
         }
@@ -55,7 +55,7 @@ foreach(IDataIndex di in Table.Indexes){
         {
             const string format = @"DELETE FROM {0} WHERE <#=strSqlKvs#>;";
 
-            var sql = string.Format(format, <#=modelName#>._.DataBaseTableName);
+            var sql = string.Format(format, DataBaseTableName);
 
             return DbConn.Execute(sql, param: <#=keyParam#>.Select(p => new {Original<#=FormatUtil.ToCodeName(keyFields.First().Name)#> = p}), transaction: tran);
         }
@@ -63,32 +63,3 @@ foreach(IDataIndex di in Table.Indexes){
 }
 #>
 		#endregion
-
-		/// <summary>
-        /// 自定义条件删除
-        /// </summary>
-        /// <param name="where">自定义条件，where子句（不包含关键字Where）</param>
-        /// <param name="param">参数（对象属性自动转为sql中的参数，eg：new {Id=10},则执行sql会转为参数对象 @Id,值为10）</param>
-        /// <param name="tran">事务</param>
-        /// <returns></returns>
-        public virtual int Remove(string where, object param = null, IDbTransaction tran = null)
-        {
-            const string format = @"DELETE FROM {0} {1};";
-
-            var whereClause = string.Empty;
-            if (!string.IsNullOrWhiteSpace(where))
-            {
-                whereClause = where.Trim();
-
-                if (!whereClause.StartsWith("where", StringComparison.OrdinalIgnoreCase))
-                {
-                    whereClause = "WHERE " + whereClause;
-                }
-            }
-
-            var sql = string.Format(format,
-                <#=modelName#>._.DataBaseTableName,
-                whereClause);
-
-            return DbConn.Execute(sql, param: param, transaction: tran);
-        }
