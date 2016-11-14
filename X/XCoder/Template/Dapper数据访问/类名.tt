@@ -1,0 +1,220 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using App.FrameCore;
+
+namespace <#=Config.NameSpace#>
+{<#
+    String tdis=FormatUtil.ToSigleDisplay(Table.DisplayName);
+    String tdes=FormatUtil.ToSigleDisplay(Table.Description);
+    if(String.IsNullOrEmpty(tdis)) tdis=tdes;
+
+	var modelName = TemplateHelper.FormatUtil.ToCodeName(Table.Name);
+    #>
+    /// <summary><#=tdis#></summary><# if(tdis!=tdes){#>
+	/// <remarks><#=tdes#></remarks><#}#>
+    ///[Description("<#=tdes#>")]<#
+foreach(IDataIndex di in Table.Indexes){if(di.Columns==null||di.Columns.Length<1)continue;#>
+    ///[BindIndex("<#=di.Name#>", <#=di.Unique.ToString().ToLower()#>, "<#=String.Join(",", di.Columns)#>")]<#
+}
+foreach(IDataRelation dr in Table.Relations){#>
+    ///[BindRelation("<#=dr.Column#>", <#=dr.Unique.ToString().ToLower()#>, "<#=dr.RelationTable#>", "<#=dr.RelationColumn#>")]<#}#>
+    ///[BindTable("<#=Table.TableName#>", Description = "<#=tdes#>", ConnName = "<#=Table.ConnName ?? Config.EntityConnName#>", DbType = DatabaseType.<#=Table.DbType#><#if(Table.IsView){#>, IsView = true<#}#>)]
+    public partial class <#=modelName#> : TableModelBase
+    {<#
+if(Table.Columns.Count>0)
+{
+#>
+        #region 属性<#
+    foreach(IDataColumn Field in Table.Columns)
+    {
+        String des = FormatUtil.ToSigleDisplay(Field.Description);
+		var fieldType = TemplateHelper.FormatUtil.ToFieldTypeString(Field);
+		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+		if(Field.PrimaryKey)
+		{#>
+		/// <summary>Original<#=des#></summary>
+		public virtual <#=fieldType#> Original<#=fieldName#> { get; set; }
+		<#}
+#>
+        /// <summary><#=des#></summary>
+		public virtual <#=fieldType#> <#=fieldName#> { get; set; }
+<#
+    }
+#>        #endregion
+
+        #region 实现抽象类方法
+
+		/// <summary>
+        /// 数据库表名
+        /// </summary>
+        public override string DataBaseTableName => _.DataBaseTableName;
+
+        /// <summary>
+        /// 获取模型所有字段
+        /// </summary>
+        /// <returns></returns>
+        public override IList<Field> GetAllFields()
+        {
+            return _.AllFields;
+        }
+
+        /// <summary>
+        /// 获取/设置 字段值。
+        /// 一个索引
+        /// 派生实体类可重写该索引
+        /// </summary>
+        /// <param name="name">字段名</param>
+        /// <returns></returns>
+        public override Object this[String name]
+        {
+            get
+            {
+                switch (name)
+                {<#
+    foreach(IDataColumn Field in Table.Columns)
+    {
+		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+		if(Field.PrimaryKey){#>
+					case __.Original<#=fieldName#> : return Original<#=fieldName#>;<#
+		}
+#>
+                    case __.<#=fieldName#> : return <#=fieldName#>;<#
+    }
+#>
+                    default: return null;
+                }
+            }
+            set
+            {
+                switch (name)
+                {<#
+    Type conv=typeof(Convert);
+    foreach(IDataColumn Field in Table.Columns)
+    {
+		var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+		if(Field.PrimaryKey){
+			if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
+		#>
+					case __.Original<#=fieldName#> : Original<#=fieldName#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
+			}else{
+		#>
+					case __.Original<#=fieldName#> : Original<#=fieldName#> = (<#=Field.DataType.Name#>)value; break;<#
+			}
+		}
+
+        if(conv.GetMethod("To"+Field.DataType.Name, new Type[]{typeof(Object)})!=null){
+#>
+                    case __.<#=fieldName#> : <#=fieldName#> = Convert.To<#=Field.DataType.Name#>(value); break;<#
+        }else{
+#>
+                    case __.<#=fieldName#> : <#=fieldName#> = (<#=Field.DataType.Name#>)value; break;<#
+        }
+    }
+#>
+                    default: break;
+				}
+            }
+        }
+        #endregion
+<#
+}
+#>
+        #region 字段信息
+
+		/// <summary>取得<#=tdis#>字段名称的快捷方式</summary>
+        public partial class __
+        {<#
+foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+
+    String des = FormatUtil.ToSigleDisplay(Field.Description);
+
+	if(Field.PrimaryKey){
+#>
+			///<summary>原始主键，<#=des#></summary>
+            public const String Original<#=fieldName#> = "Original<#=fieldName#>";
+<#}#>
+            ///<summary><#=des#></summary>
+            public const String <#=fieldName#> = "<#=fieldName#>";
+<#
+}
+#>
+        }
+
+        /// <summary>取得<#=tdis#>字段信息的快捷方式</summary>
+        public partial class _
+        {
+			/// <summary>
+            /// 数据库表名
+            /// </summary>
+            public const string DataBaseTableName = "<#=Table.TableName#>";
+<#
+foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+    String des=Field.Description;
+    if(!String.IsNullOrEmpty(des)) des=des.Replace("\r\n"," ");
+
+	if(Field.PrimaryKey){
+#>
+            ///<summary>原始主键,<#=des#></summary>
+            public static readonly Field Original<#=fieldName#> = new Field
+            {
+                Name = __.Original<#=fieldName#>,
+				ColumnName = "<#=Field.Name#>",
+                DisplayName = "<#=Field.DisplayName#>",
+                Description = "<#=(""+Field.Description).Replace("\\", "\\\\")#>",
+                DataType = DbType.<#=Field.DataType.Name#>,
+                DefaultValue = <#=Field.Default==null?"null":"\""+Field.Default.Replace("\\", "\\\\")+"\""#>,
+                IsPrimaryKey = <#=Field.PrimaryKey.ToString().ToLower()#>,
+				Identity = <#=Field.Identity.ToString().ToLower()#>,
+                IsReadonly = true,
+                IsNullable = <#=Field.Nullable.ToString().ToLower()#>,
+                Length = <#=Field.Length#>,
+                Precision = <#=Field.Precision#>,
+                Scale = <#=Field.Scale#>
+			};
+<#}#>
+            ///<summary><#=des#></summary>
+            public static readonly Field <#=fieldName#> = new Field
+            {
+                Name = __.<#=fieldName#>,
+				ColumnName = "<#=Field.Name#>",
+                DisplayName = "<#=Field.DisplayName#>",
+                Description = "<#=(""+Field.Description).Replace("\\", "\\\\")#>",
+                DataType = DbType.<#=Field.DataType.Name#>,
+                DefaultValue = <#=Field.Default==null?"null":"\""+Field.Default.Replace("\\", "\\\\")+"\""#>,
+                IsPrimaryKey = <#=Field.PrimaryKey.ToString().ToLower()#>,
+				Identity = <#=Field.Identity.ToString().ToLower()#>,
+                IsReadonly = false,
+                IsNullable = <#=Field.Nullable.ToString().ToLower()#>,
+                Length = <#=Field.Length#>,
+                Precision = <#=Field.Precision#>,
+                Scale = <#=Field.Scale#>
+			};
+<#
+}
+#>
+			///<summary>所有字段列表</summary>
+			public static readonly IList<Field> AllFields = new List<Field>
+            {<#
+foreach(IDataColumn Field in Table.GetAllColumns(Tables, true))
+{
+	var fieldName = TemplateHelper.FormatUtil.ToCodeName(Field.Name);
+	if(Field.PrimaryKey){#>
+				Original<#=fieldName#>,<#}#>			
+				<#=fieldName#>,<#
+}
+#>
+            };
+
+        }
+
+        #endregion
+    }
+}

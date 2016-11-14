@@ -350,6 +350,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Template\CS实体\类名.tt" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Template\Dapper数据访问\Include_删除.tt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Template\Dapper数据访问\类名.tt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Template\Dapper数据访问\类名Dal.tt" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
